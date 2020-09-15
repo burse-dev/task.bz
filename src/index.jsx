@@ -13,7 +13,7 @@ ReactDOM.render(
   <Router>
     <div>
       <Route component={ScrollToTop} />
-      <App/>
+      <App />
     </div>
   </Router>,
   document.getElementById('root'),
