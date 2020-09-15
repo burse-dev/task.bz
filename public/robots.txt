@@ -1,0 +1,3 @@
+User-Agent: *
+Host: https://site.ru
+sitemap: https://site.ru/sitemap.xml

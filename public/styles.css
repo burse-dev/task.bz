@@ -1,0 +1,52 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 0;
+}
+
+@font-face {
+  font-family: Rubik-Light;
+  src: url("./fonts/Rubik-Light.ttf");
+}
+
+@font-face {
+  font-family: Rubik-Regular;
+  src: url("./fonts/Rubik-Regular.ttf");
+}
+
+@font-face {
+  font-family: Rubik-Bold;
+  src: url("./fonts/Rubik-Bold.ttf");
+}
+
+@font-face {
+  font-family: Roboto-Bold;
+  src: url("./fonts/Roboto-Bold.ttf");
+}
+
+@font-face {
+  font-family: Roboto-Light;
+  src: url("./fonts/Roboto-Light.ttf");
+}
+
+@font-face {
+  font-family: Roboto-LightItalic;
+  src: url("./fonts/Roboto-LightItalic.ttf");
+}
+
+@font-face {
+  font-family: Roboto-BoldItalic;
+  src: url("./fonts/Roboto-BoldItalic.ttf");
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url("./fonts/Roboto-Regular.ttf");
+}

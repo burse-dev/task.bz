@@ -1,0 +1,27 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "global-require": 0,
+    "react/prop-types": 0,
+    "no-shadow": 0,
+    "no-console": 0,
+    "no-alert": 0,
+    "object-curly-newline": ["error", {
+      "ExportDeclaration": { "minProperties": 1 }
+    }],
+    "jsx-a11y/label-has-for": [ "error", {
+      "required": {
+        "some": [ "nesting", "id"  ]
+      }
+    }],
+    "jsx-a11y/label-has-associated-control": [ "error", {
+      "required": {
+        "some": [ "nesting", "id"  ]
+      }
+    }]
+  }
+}
