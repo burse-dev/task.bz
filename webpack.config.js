@@ -50,6 +50,6 @@ module.exports = {
     contentBase: path.join(__dirname, 'build'),
     compress: false,
     port: WEBPACK_DEV_SERVER_PORT,
-    proxy: { '*': `http://localhost:${DEV_SERVER_PORT}` },
+    proxy: { '/api': `http://localhost:${DEV_SERVER_PORT}` },
   },
 };

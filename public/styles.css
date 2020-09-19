@@ -11,6 +11,11 @@ textarea:focus {
   outline: 0;
 }
 
+a, a:hover {
+  color: #333 !important;
+  text-decoration: none !important;
+}
+
 @font-face {
   font-family: Rubik-Light;
   src: url("./fonts/Rubik-Light.ttf");
