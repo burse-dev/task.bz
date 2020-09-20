@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
+import Price from '../../generic/Price';
+import Pre from '../../generic/Pre';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,28 +24,46 @@ const Title = styled.div`
 
 const Description = styled.div`
   font-size: 14px;
+  white-space: pre-wrap;
 `;
 
-export default ({ title, description }) => {
+const Category = styled.div`
+  font-size: 14px;
+  color: #888;
+`;
+
+export default ({ title, description, category, price }) => {
   const [open, setOpen] = useState(false);
   return (
-    <Wrapper className="mt-1 rounded">
+    <Wrapper
+      className="mt-1 rounded"
+      onClick={() => setOpen(!open)}
+      aria-controls="example-collapse-text"
+      aria-expanded={open}
+    >
       <Title
-        onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open}
+        className="d-flex align-items-center"
       >
-        {title}
+        <div className="pr-2">
+          {title}
+        </div>
+        <Price price={price} />
       </Title>
+      <Category>
+        Категория:
+        {' '}
+        {category}
+      </Category>
       <Collapse in={open}>
         <Description id="example-collapse-text">
-          <br />
-          <pre>
-            {description}
-          </pre>
-          <Link to="task/1">
-            <Button variant="outline-success">Подробнее</Button>
-          </Link>
+          <div className="p-2 p-lg-3">
+            <Pre>
+              {description}
+            </Pre>
+            <Link to="task/1">
+              <Button variant="outline-success">Подробнее</Button>
+            </Link>
+          </div>
         </Description>
       </Collapse>
     </Wrapper>

@@ -20,11 +20,11 @@ const Icon = styled.img`
 export default () => (
   <Navbar bg="light" expand="lg" className="sticky-top">
     <Container>
-      <Navbar.Brand href="#home">Burse</Navbar.Brand>
+      <Navbar.Brand href="/">Burse</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="#home">Задания</Nav.Link>
+          <Nav.Link href="/feed">Задания</Nav.Link>
           {/* <Nav.Link href="#link">Link</Nav.Link> */}
           {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown"> */}
           {/*  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item> */}

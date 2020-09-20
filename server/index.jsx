@@ -69,7 +69,7 @@ const listen = () => app.listen(PORT, () => {
 if (process.env.NODE_ENV === 'development') {
   // db.sync({ alter: true }).then(() => {
   //   console.log('db running at development mode');
-  //   listen();
+  listen();
   // });
 } else {
   // console.log('db running at production mode');
