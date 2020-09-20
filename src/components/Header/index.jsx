@@ -20,7 +20,7 @@ const Icon = styled.img`
 export default () => (
   <Navbar bg="light" expand="lg" className="sticky-top">
     <Container>
-      <Navbar.Brand href="/">Burse</Navbar.Brand>
+      <Navbar.Brand href="/">Task.bz</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
