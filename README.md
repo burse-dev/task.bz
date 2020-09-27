@@ -25,3 +25,16 @@ server {
     }
 }
 ```
+
+##docker 
+
+local
+```
+docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
+docker ps -a // список контейнеров
+docker start d69940715251 // запустить контейнер
+```
+
+```
+docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v /var/www/project/docker_postgres:/var/lib/postgresql/data postgres
+```

@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "docker",
+    "database": "lucky-promo",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false,
+    "notificationMail": "",
+    "notificationPass": "",
+    "notificationRecipient": ""
+  },
+  "production": {
+    "username": "postgres",
+    "password": "docker",
+    "database": "lucky-promo",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false,
+    "notificationMail": "",
+    "notificationPass": "",
+    "notificationRecipient": ""
+  }
+}

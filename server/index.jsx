@@ -11,9 +11,15 @@ import 'isomorphic-fetch';
 import './ignore-styles';
 import App from '../src/components/App';
 
+// eslint-disable-next-line no-unused-vars
+import Users from './models/users';
+
 const formData = require('express-form-data');
 
 process.env.TZ = 'Europe/Moscow';
+
+// Database
+const db = require('./config/database');
 
 const app = express();
 
@@ -67,12 +73,12 @@ const listen = () => app.listen(PORT, () => {
 });
 
 if (process.env.NODE_ENV === 'development') {
-  // db.sync({ alter: true }).then(() => {
-  //   console.log('db running at development mode');
-  listen();
-  // });
+  db.sync().then(() => {
+    console.log('db running at development mode');
+    listen();
+  }).catch(e => console.log(e));
 } else {
-  // console.log('db running at production mode');
+  console.log('db running at production mode');
   listen();
 }
 
