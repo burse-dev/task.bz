@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
 import Price from '../../generic/Price';
 import Pre from '../../generic/Pre';
+import categories from '../../../constant/category';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -32,6 +33,8 @@ const Category = styled.div`
   color: #888;
 `;
 
+const getCategoryById = id => categories.find(category => category.id === id);
+
 export default ({ title, description, category, price }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -52,7 +55,7 @@ export default ({ title, description, category, price }) => {
       <Category>
         Категория:
         {' '}
-        {category}
+        {getCategoryById(category).name}
       </Category>
       <Collapse in={open}>
         <Description id="example-collapse-text">

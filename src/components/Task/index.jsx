@@ -6,7 +6,6 @@ import Header from '../Header';
 import Price from '../generic/Price';
 import Pre from '../generic/Pre';
 
-
 const Title = styled.h1`
   font-size: 28px;
   padding-bottom: 10px;

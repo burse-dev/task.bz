@@ -2,6 +2,8 @@ import bodyParser from 'body-parser';
 import React from 'react';
 import express from 'express';
 import compression from 'compression';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
@@ -10,9 +12,7 @@ import path from 'path';
 import 'isomorphic-fetch';
 import './ignore-styles';
 import App from '../src/components/App';
-
-// eslint-disable-next-line no-unused-vars
-import Users from './models/users';
+import reducers from '../src/reducers';
 
 const formData = require('express-form-data');
 
@@ -34,6 +34,12 @@ app.use(express.static(path.join(__dirname, '..', 'build'), { index: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use('/api', require('./api/login/authentication').default);
+app.use('/api', require('./api/login/registration').default);
+app.use('/api', require('./api/login/recovery').default);
+app.use('/api', require('./api/user').default);
+app.use('/api', require('./api/tasks').default);
+
 app.get('/*', (req, res) => {
   const filePath = path.resolve(__dirname, '..', 'build', 'index.html');
   fs.readFile(filePath, 'utf8', (err, htmlData) => {
@@ -48,11 +54,15 @@ app.get('/*', (req, res) => {
     const sheet = new ServerStyleSheet();
     const context = {};
 
+    const store = createStore(reducers);
+
     const markup = renderToString(
       <StyleSheetManager sheet={sheet.instance}>
-        <StaticRouter location={url} context={context}>
-          <App />
-        </StaticRouter>
+        <Provider store={store}>
+          <StaticRouter location={url} context={context}>
+            <App />
+          </StaticRouter>
+        </Provider>
       </StyleSheetManager>,
     );
 
@@ -73,7 +83,7 @@ const listen = () => app.listen(PORT, () => {
 });
 
 if (process.env.NODE_ENV === 'development') {
-  db.sync().then(() => {
+  db.sync({ alter: true }).then(() => {
     console.log('db running at development mode');
     listen();
   }).catch(e => console.log(e));
