@@ -5,7 +5,7 @@ export default data => async dispatch => fetch('/api/user/data', {
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Authorization: `Bearer ${data}`,
+    'X-Authorization': `Bearer ${data}`,
   },
 })
   .then(response => response.json())

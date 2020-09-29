@@ -38,7 +38,7 @@ class User extends Component {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${authToken}`,
+        'X-Authorization': `Bearer ${authToken}`,
       },
     })
       .then(async (response) => {
@@ -74,7 +74,7 @@ class User extends Component {
       method: 'POST',
       body: formData,
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        'X-Authorization': `Bearer ${authToken}`,
       },
     })
       .then(async (response) => {

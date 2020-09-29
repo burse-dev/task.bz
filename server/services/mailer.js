@@ -5,7 +5,6 @@ const config = require('../config/config.json')[env];
 
 export default async (subject, html, attachments, recipient) => {
   const transporter = nodemailer.createTransport({
-    service: 'Yandex',
     host: 'smtp.yandex.ru',
     port: 465,
     secure: true,
