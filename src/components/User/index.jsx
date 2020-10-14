@@ -143,7 +143,7 @@ class User extends Component {
       method: 'POST',
       body: formData,
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        'X-Authorization': `Bearer ${authToken}`,
       },
     })
       .then(async () => {
@@ -163,7 +163,7 @@ class User extends Component {
       method: 'POST',
       body: formData,
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        'X-Authorization': `Bearer ${authToken}`,
       },
     })
       .then(async () => {

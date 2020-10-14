@@ -75,28 +75,30 @@ const TicketsForm = ({ handleSubmit, requisites, balance, tickets }) => (
       </Button>
     </Form>
 
-    <Table className="mt-4" striped bordered hover>
-      <thead>
-        <tr>
-          <th>Дата</th>
-          <th>Реквизиты</th>
-          <th>Сумма</th>
-          <th>Статус</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tickets.map(ticket => (
+    {!!tickets.length && (
+      <Table className="mt-4" striped bordered hover>
+        <thead>
           <tr>
-            <td>{moment(ticket.createdAt).format('HH:mm DD.MM.YY')}</td>
-            <td>{getTypeNameById(ticket.requisite.type, requisitesType)}</td>
-            <td>{ticket.value}</td>
-            <td>
-              <TicketStatusBadge statusId={ticket.status} />
-            </td>
+            <th>Дата</th>
+            <th>Реквизиты</th>
+            <th>Сумма</th>
+            <th>Статус</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {tickets.map(ticket => (
+            <tr>
+              <td>{moment(ticket.createdAt).format('HH:mm DD.MM.YY')}</td>
+              <td>{getTypeNameById(ticket.requisite.type, requisitesType)}</td>
+              <td>{ticket.value}</td>
+              <td>
+                <TicketStatusBadge statusId={ticket.status} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    )}
   </>
 );
 
