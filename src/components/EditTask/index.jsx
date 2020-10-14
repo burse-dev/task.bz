@@ -127,7 +127,11 @@ class EditTask extends Component {
 
     const { match: { params: { id } } } = this.props;
 
-    return fetch(`/api/tasks/${id}`, {
+    if (!id) {
+      return;
+    }
+
+    fetch(`/api/tasks/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
