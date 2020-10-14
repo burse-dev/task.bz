@@ -13,7 +13,7 @@ import {
   REJECTED_TICKET_STATUS_ID,
   SUCCESS_TICKET_STATUS_ID,
 } from '../../../src/constant/ticketStatus';
-import { DIFF_TYPE_ID } from '../../../src/constant/transactionType';
+import { ADD_TYPE_ID, DIFF_TYPE_ID } from '../../../src/constant/transactionType';
 
 export const getReports = async (req, res, next) => {
   try {
@@ -61,12 +61,15 @@ export const approveReports = async (req, res, next) => {
     });
 
     const promises = userTasks.map(async (userTask) => {
-      // if (userTask.wasPaid !== true) {
-      // Transactions.create({
-      //   userId: userTask.userId,
-      //   value: userTask.task.price,
-      // });
-      //
+      if (userTask.wasPaid !== true) {
+        Transactions.create({
+          type: ADD_TYPE_ID,
+          userId: userTask.userId,
+          taskId: userTask.taskId,
+          value: userTask.task.price,
+        });
+      }
+
       const User = await Users.findOne({
         include: [
           {

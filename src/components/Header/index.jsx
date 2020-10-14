@@ -121,6 +121,7 @@ class Header extends Component {
                     >
                       <NavDropdown.Item>
                         Баланс:
+                        {' '}
                         {user.balance}
                       </NavDropdown.Item>
                       <LinkContainer to="/user">
