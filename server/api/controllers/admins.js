@@ -62,7 +62,7 @@ export const approveReports = async (req, res, next) => {
 
     const promises = userTasks.map(async (userTask) => {
       if (userTask.wasPaid !== true) {
-        Transactions.create({
+        await Transactions.create({
           type: ADD_TYPE_ID,
           userId: userTask.userId,
           taskId: userTask.taskId,
@@ -81,7 +81,7 @@ export const approveReports = async (req, res, next) => {
         },
       });
 
-      User.recalculatePayments();
+      await User.recalculatePayments();
 
       return userTask.update({
         status: SUCCESS_STATUS_ID,

@@ -20,9 +20,9 @@ const Users = db.define('users', {
 
 
 // eslint-disable-next-line func-names
-Users.prototype.recalculatePayments = function () {
+Users.prototype.recalculatePayments = async function () {
   if (!this.transactions) {
-    return;
+    return null;
   }
 
   const balance = this.transactions.reduce(
@@ -30,7 +30,7 @@ Users.prototype.recalculatePayments = function () {
     0,
   );
 
-  this.update({
+  return this.update({
     balance,
   });
 };
