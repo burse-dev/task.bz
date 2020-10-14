@@ -57,12 +57,12 @@ const LoginFormRedux = reduxForm({
 
 class Login extends Component {
   handleSendLogin = async (values) => {
-    const { emailAuth, history } = this.props;
+    const { emailAuth } = this.props;
     const auth = emailAuth(values);
 
     return auth.then((res) => {
       if (res) {
-        history.push('/feed');
+        window.location.replace('/feed');
       }
     });
   };
