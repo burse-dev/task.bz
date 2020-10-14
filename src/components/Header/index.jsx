@@ -13,6 +13,7 @@ import userIcon from './user-icon.svg';
 import lockIcon from './lock-icon.svg';
 import { logOut } from '../../actions';
 import loadUserData from '../../actions/user';
+import { ADMIN_TYPE_ID, USER_TYPE_ID } from '../../constant/userType';
 
 const LockIcon = styled.img`
   width: 15px;
@@ -45,7 +46,7 @@ class Header extends Component {
   handleLogout = () => {
     const { logOut, history } = this.props;
     const logout = logOut();
-    logout.then(() => history.push('/'));
+    logout.then(() => history.push('/login'));
   };
 
   render() {
@@ -61,30 +62,76 @@ class Header extends Component {
             <Navbar.Brand>Task.bz</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <LinkContainer to="/">
-                <Nav.Link href="/feed">Задания</Nav.Link>
-              </LinkContainer>
+              {isAuth && (
+                <>
+                  {user.type === USER_TYPE_ID && (
+                    <>
+                      <LinkContainer to="/feed">
+                        <Nav.Link href="/feed">Поиск задания</Nav.Link>
+                      </LinkContainer>
+                      <LinkContainer to="/works-list">
+                        <Nav.Link href="/works-list">Мои работы</Nav.Link>
+                      </LinkContainer>
+                    </>
+                  )}
+
+                  {user.type === ADMIN_TYPE_ID && (
+                    <>
+                      <LinkContainer to="/tasks-list">
+                        <Nav.Link href="/tasks-list">Мои задания</Nav.Link>
+                      </LinkContainer>
+                      <LinkContainer to="/tickets">
+                        <Nav.Link href="/tickets">Тикеты</Nav.Link>
+                      </LinkContainer>
+                    </>
+                  )}
+                </>
+              )}
             </Nav>
 
             {isAuth ? (
-              <Nav>
-                <NavDropdown
-                  title={(
-                    <span>
-                      <UserIcon src={userIcon} className="img-responsive pull-right" alt="user" />
-                      {user.login}
-                    </span>
-                  )}
-                >
-                  <LinkContainer to="/user">
-                    <NavDropdown.Item>Профиль</NavDropdown.Item>
-                  </LinkContainer>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
-                </NavDropdown>
-              </Nav>
+              <>
+                {user.type === ADMIN_TYPE_ID && (
+                  <Nav>
+                    <NavDropdown
+                      title={(
+                        <span>
+                          <UserIcon src={userIcon} className="img-responsive pull-right" alt="user" />
+                          {user.login}
+                        </span>
+                      )}
+                    >
+                      <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                )}
+
+                {user.type === USER_TYPE_ID && (
+                  <Nav>
+                    <NavDropdown
+                      title={(
+                        <span>
+                          <UserIcon src={userIcon} className="img-responsive pull-right" alt="user" />
+                          {user.login}
+                        </span>
+                      )}
+                    >
+                      <NavDropdown.Item>
+                        Баланс:
+                        {user.balance}
+                      </NavDropdown.Item>
+                      <LinkContainer to="/user">
+                        <NavDropdown.Item>Профиль</NavDropdown.Item>
+                      </LinkContainer>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                )}
+              </>
             ) : (
               <Nav>
                 <LockIcon src={lockIcon} className="img-responsive pull-right" alt="user" />

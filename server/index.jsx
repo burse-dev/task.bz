@@ -30,22 +30,30 @@ app.use(compression());
 app.use(formData.parse());
 
 app.use(express.static(path.join(__dirname, '..', 'build'), { index: false }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  if (req.headers['x-authorization']) {
+    req.headers.authorization = req.headers['x-authorization'];
+  }
+  next();
+});
 
 app.use('/api', require('./api/login/authentication').default);
 app.use('/api', require('./api/login/registration').default);
 app.use('/api', require('./api/login/recovery').default);
 app.use('/api', require('./api/user').default);
 app.use('/api', require('./api/tasks').default);
+app.use('/api', require('./api/tickets').default);
+app.use('/api', require('./api/admins').default);
 
 app.get('/*', (req, res) => {
   const filePath = path.resolve(__dirname, '..', 'build', 'index.html');
   fs.readFile(filePath, 'utf8', (err, htmlData) => {
     if (err) {
-      // logger.error('read err', err);
-      console.log('read err', err);
       return res.status(404).end();
     }
 

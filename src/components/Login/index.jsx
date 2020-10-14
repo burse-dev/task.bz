@@ -70,7 +70,7 @@ class Login extends Component {
   render() {
     return (
       <>
-        <Container>
+        <Container className="vh-80">
           <Row className="pt-5 justify-content-center align-items-center">
             <Col lg="5">
               <Card>

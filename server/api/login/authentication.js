@@ -1,9 +1,8 @@
 import express from 'express';
+import passport from 'passport';
+import { signIn } from '../controllers/users';
 
-const passport = require('passport');
 require('../passport');
-
-const UsersController = require('../controllers/users');
 
 const router = express.Router();
 
@@ -18,6 +17,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-router.post('/email/login', passport.authenticate('local', { session: false }), UsersController.signIn);
+router.post('/email/login', passport.authenticate('local', { session: false }), signIn);
 
 export default router;

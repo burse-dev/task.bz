@@ -4,7 +4,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
 
 module.exports = new Sequelize(config.database, config.username, config.password, {
-  host: config.host,
+  host: config.databaseHost,
   dialect: config.dialect,
   logging: config.logging,
   pool: {

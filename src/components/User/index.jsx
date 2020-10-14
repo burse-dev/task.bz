@@ -5,10 +5,12 @@ import Col from 'react-bootstrap/Col';
 import { ListGroup, Tab } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import Header from '../Header';
 import Preloader from '../generic/Preloader';
 import ProfileForm from './ProfileForm';
-import PaymentsForm from './PaymentsForm';
+import TicketsForm from './TicketsForm';
+import Accruals from './Accruals';
+import RequisitesForm from './RequisitesForm';
+import loadUserData from '../../actions/user';
 
 class User extends Component {
   constructor() {
@@ -16,6 +18,8 @@ class User extends Component {
 
     this.state = {
       loading: true,
+      tickets: [],
+      accruals: [],
       userData: null,
     };
   }
@@ -26,6 +30,10 @@ class User extends Component {
     });
 
     await this.load();
+
+    await this.loadTickets();
+
+    await this.loadAccruals();
 
     this.setState({
       loading: false,
@@ -50,6 +58,40 @@ class User extends Component {
 
         this.setState({
           userData: responseData,
+        });
+      });
+  };
+
+  loadTickets = () => {
+    const { authToken } = this.props;
+    return fetch('/api/user/getTickets', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    })
+      .then(async (response) => {
+        const responseData = await response.json();
+        this.setState({
+          tickets: responseData,
+        });
+      });
+  };
+
+  loadAccruals = () => {
+    const { authToken } = this.props;
+    return fetch('/api/user/getAccruals', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    })
+      .then(async (response) => {
+        const responseData = await response.json();
+        this.setState({
+          accruals: responseData,
         });
       });
   };
@@ -89,35 +131,62 @@ class User extends Component {
       });
   };
 
-  handleSubmitPaymentsForm = async () => {
-    // const { authToken } = this.props;
-    //
-    // const formData = new FormData();
+  handleSubmitRequisitesForm = async (values) => {
+    const { authToken } = this.props;
 
-    // return fetch('/api/user/save', {
-    //   method: 'POST',
-    //   body: formData,
-    //   headers: {
-    //     Authorization: `Bearer ${authToken}`,
-    //   },
-    // })
-    //   .then(async (response) => {
-    //     const responseData = await response.json();
-    //     this.setState({
-    //       userData: responseData,
-    //     });
-    //   })
-    //   .catch(() => {
-    //     alert('Внутренняя ошибка, обратитесь к разарботчику');
-    //     throw new Error();
-    //   });
+    const formData = new FormData();
+
+    formData.append('value', values.value);
+    formData.append('type', values.type);
+
+    return fetch('/api/user/addRequisites', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then(async () => {
+        const { loadUserData, authToken } = this.props;
+        loadUserData(authToken);
+      });
+  };
+
+  handleSubmitTicketsForm = async (values) => {
+    const { authToken } = this.props;
+
+    const formData = new FormData();
+    formData.append('paymentsMethod', values.paymentsMethod);
+    formData.append('sum', values.sum);
+
+    return fetch('/api/user/addTicket', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then(async () => {
+        const { loadUserData, authToken } = this.props;
+        loadUserData(authToken);
+        await this.loadTickets();
+      });
   };
 
   render() {
-    const { loading, userData } = this.state;
+    const { loading, userData, tickets, accruals } = this.state;
+    const { user, authToken } = this.props;
+
+    if (!authToken) {
+      return (
+        <Container className="pt-3 pb-5 vh-80">
+          <Preloader />
+        </Container>
+      );
+    }
+
     return (
       <>
-        <Header />
         <div className="pt-3 pt-lg-5" />
         <Tab.Container id="list-group-tabs-example" defaultActiveKey="#profile">
           <Container className="pt-3 pb-5">
@@ -126,6 +195,12 @@ class User extends Component {
                 <ListGroup className="pb-4">
                   <ListGroup.Item action href="#profile">
                     Профиль
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#requisites">
+                    Реквизиты
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#accrual">
+                    Начисления
                   </ListGroup.Item>
                   <ListGroup.Item action href="#payments">
                     Выплаты
@@ -144,10 +219,23 @@ class User extends Component {
                         initialValues={userData}
                       />
                     </Tab.Pane>
+                    <Tab.Pane eventKey="#requisites">
+                      <RequisitesForm
+                        onSubmit={this.handleSubmitRequisitesForm}
+                        requisites={user.requisites}
+                      />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="#accrual">
+                      <Accruals
+                        accruals={accruals}
+                      />
+                    </Tab.Pane>
                     <Tab.Pane eventKey="#payments">
-                      <PaymentsForm
-                        onSubmit={this.handleSubmitPaymentsForm}
-                        initialValues={userData}
+                      <TicketsForm
+                        onSubmit={this.handleSubmitTicketsForm}
+                        balance={user.balance}
+                        requisites={user.requisites}
+                        tickets={tickets}
                       />
                     </Tab.Pane>
                   </Tab.Content>
@@ -161,9 +249,16 @@ class User extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  loadUserData: (data) => {
+    dispatch(loadUserData(data));
+  },
+});
+
 const mapStateToProps = state => ({
+  user: state.userData.authUser,
   errorMessage: state.auth.errorMessage,
   authToken: state.auth.token,
 });
 
-export default connect(mapStateToProps)(User);
+export default connect(mapStateToProps, mapDispatchToProps)(User);

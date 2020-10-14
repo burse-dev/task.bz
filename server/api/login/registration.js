@@ -4,6 +4,7 @@ import mailer from '../../services/mailer';
 import registration from '../../templates/registration';
 import isEmailValid from '../../functions/isEmailValid';
 import generateHash from '../../functions/generateHash';
+import { USER_TYPE_ID } from '../../../src/constant/userType';
 
 const router = express.Router();
 
@@ -44,6 +45,7 @@ router.post('/registration', async (req, res, next) => {
       const hash = await generateHash(newPass);
 
       await Users.create({
+        type: USER_TYPE_ID,
         login,
         email,
         password: hash,

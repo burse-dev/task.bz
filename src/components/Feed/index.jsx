@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Header from '../Header';
+import { connect } from 'react-redux';
 import TaskCard from './TaskCard';
 import Preloader from '../generic/Preloader';
 
@@ -22,7 +22,7 @@ class Feed extends Component {
     this.state = {
       loading: true,
       tasks: [],
-      count: 0,
+      // count: 0,
     };
   }
 
@@ -38,7 +38,7 @@ class Feed extends Component {
     });
   }
 
-  load = async () => fetch('/api/tasks', {
+  load = async () => fetch('/api/feedTasks', {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -49,16 +49,24 @@ class Feed extends Component {
 
       this.setState({
         tasks: responseData.tasks,
-        count: responseData.count,
+        // count: responseData.count,
       });
     });
 
   render() {
-    const { loading, tasks, count } = this.state;
-    console.log(count);
+    const { loading, tasks } = this.state;
+    const { authToken } = this.props;
+
+    if (!authToken) {
+      return (
+        <Container className="pt-3 pb-5 vh-80">
+          <Preloader className="mt-5" />
+        </Container>
+      );
+    }
+
     return (
       <>
-        <Header />
         <Container>
           <div className="pt-3 pt-lg-5">
             <h2>Поиск задач</h2>
@@ -68,14 +76,15 @@ class Feed extends Component {
             </FeedDescription>
           </div>
         </Container>
-        <Container className="pt-3">
+        <Container className="vh-80 pt-3">
           <Row>
             <Col>
               {loading && (
-                <Preloader />
+                <Preloader className="mt-5" />
               )}
               {!loading && tasks.map(task => (
                 <TaskCard
+                  id={task.id}
                   title={task.title}
                   description={task.description}
                   category={task.category}
@@ -90,4 +99,8 @@ class Feed extends Component {
   }
 }
 
-export default Feed;
+const mapStateToProps = ({ auth }) => ({
+  authToken: auth.token,
+});
+
+export default connect(mapStateToProps)(Feed);

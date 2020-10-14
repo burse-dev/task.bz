@@ -1,18 +1,49 @@
 import express from 'express';
-
-const passport = require('passport');
+import passport from 'passport';
+import {
+  getOwnData,
+  getTasks,
+  makeTask,
+  checkUserTask,
+  cancelTask,
+  sendReport,
+  editReport,
+  addRequisites,
+  addTicket,
+  getTickets,
+  getAccruals,
+  save,
+} from '../controllers/users';
 
 const router = express.Router();
-
-const UsersController = require('../controllers/users');
 
 router.param('id', (req, res, next, id) => {
   req.userId = id;
   return next();
 });
 
-router.get('/user/data', passport.authenticate('jwt', { session: false }), UsersController.ownData);
+router.get('/user/data', passport.authenticate('jwt', { session: false }), getOwnData);
 
-router.post('/user/save', passport.authenticate('jwt', { session: false }), UsersController.save);
+router.get('/user/tasks', passport.authenticate('jwt', { session: false }), getTasks);
+
+router.get('/user/getTickets', passport.authenticate('jwt', { session: false }), getTickets);
+
+router.get('/user/getAccruals', passport.authenticate('jwt', { session: false }), getAccruals);
+
+router.post('/user/makeTask', passport.authenticate('jwt', { session: false }), makeTask);
+
+router.post('/user/sendReport', passport.authenticate('jwt', { session: false }), sendReport);
+
+router.post('/user/editReport', passport.authenticate('jwt', { session: false }), editReport);
+
+router.post('/user/cancelTask', passport.authenticate('jwt', { session: false }), cancelTask);
+
+router.post('/user/checkUserTask', passport.authenticate('jwt', { session: false }), checkUserTask);
+
+router.post('/user/addRequisites', passport.authenticate('jwt', { session: false }), addRequisites);
+
+router.post('/user/addTicket', passport.authenticate('jwt', { session: false }), addTicket);
+
+router.post('/user/save', passport.authenticate('jwt', { session: false }), save);
 
 export default router;

@@ -35,7 +35,7 @@ const Category = styled.div`
 
 const getCategoryById = id => categories.find(category => category.id === id);
 
-export default ({ title, description, category, price }) => {
+export default ({ title, id, description, category, price }) => {
   const [open, setOpen] = useState(false);
   return (
     <Wrapper
@@ -63,7 +63,7 @@ export default ({ title, description, category, price }) => {
             <Pre>
               {description}
             </Pre>
-            <Link to="task/1">
+            <Link to={`task/${id}`}>
               <Button variant="outline-success">Подробнее</Button>
             </Link>
           </div>

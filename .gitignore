@@ -8,5 +8,7 @@ package-lock.json
 
 /server/encryption/*
 /server/config/config.json
+/server/uploads/tasks/*
+!/server/uploads/tasks/.gitkeep
 
 /public/.well-known/*

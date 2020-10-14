@@ -6,7 +6,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
     <url>
-        <loc>https://site.ru/</loc>
+        <loc>https://tasks.bz/</loc>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
     </url>

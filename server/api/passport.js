@@ -5,7 +5,6 @@ import Users from '../models/users';
 
 const passport = require('passport');
 
-// todo check this method for using
 passport.use(new Strategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
   secretOrKey: 'task.bz',
