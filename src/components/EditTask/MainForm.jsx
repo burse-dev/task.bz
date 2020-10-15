@@ -35,7 +35,7 @@ export const validateMainFields = (values, errors) => {
   }
 
   if (!values.status) {
-    errors.status = '';
+    errors.status = true;
   }
 
   if (!values.category) {
