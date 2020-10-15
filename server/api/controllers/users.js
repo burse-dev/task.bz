@@ -21,6 +21,7 @@ const config = require('../../config/config.json')[env];
 const signToken = user => JWT.sign({
   iss: 'task.bz',
   sub: user.id,
+  type: user.type,
   iat: new Date().getTime(),
   exp: new Date().setDate(new Date().getDate() + 1),
 }, 'task.bz');

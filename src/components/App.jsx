@@ -1,5 +1,6 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 import Feed from './Feed';
 import Login from './Login';
 import Registration from './Login/Registration';
@@ -19,31 +20,31 @@ export default () => (
   <>
     <Header />
     <Switch>
-      <Route exact path="/" component={Feed} />
+      <PrivateRoute exact path="/" component={Feed} />
 
-      <Route exact path="/feed" component={Feed} />
+      <PrivateRoute exact path="/feed" component={Feed} />
 
-      <Route exact path="/tasks-list" component={TasksList} />
+      <PrivateRoute exact path="/tasks-list" component={TasksList} />
 
-      <Route exact path="/tasks-list/check/:id" component={TaskCheck} />
+      <PrivateRoute exact path="/tasks-list/check/:id" component={TaskCheck} />
 
-      <Route exact path="/tasks-list/add" component={EditTask} />
-      <Route exact path="/tasks-list/edit/:id" component={EditTask} />
+      <PrivateRoute exact path="/tasks-list/add" component={EditTask} />
+      <PrivateRoute exact path="/tasks-list/edit/:id" component={EditTask} />
 
-      <Route exact path="/works-list" component={WorksList} />
+      <PrivateRoute exact path="/works-list" component={WorksList} />
 
-      <Route exact path="/create" component={EditTask} />
+      <PrivateRoute exact path="/create" component={EditTask} />
 
-      <Route exact path="/tickets" component={Tickets} />
+      <PrivateRoute exact path="/tickets" component={Tickets} />
 
-      <Route exact path="/user" component={User} />
-      <Route exact path="/payments" component={User} />
+      <PrivateRoute exact path="/user" component={User} />
+      <PrivateRoute exact path="/payments" component={User} />
 
       <Route exact path="/login" component={Login} />
       <Route exact path="/login/recovery" component={Recovery} />
       <Route exact path="/login/registration" component={Registration} />
 
-      <Route exact path="/task/:id" component={Task} />
+      <PrivateRoute exact path="/task/:id" component={Task} />
 
       {/* <Route exact path="/admin/tasks/:id" component={CreateTask} /> */}
 
