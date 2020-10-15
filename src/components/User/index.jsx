@@ -189,7 +189,7 @@ class User extends Component {
       <>
         <div className="pt-3 pt-lg-5" />
         <Tab.Container id="list-group-tabs-example" defaultActiveKey="#profile">
-          <Container className="pt-3 pb-5">
+          <Container className="pt-3 pb-5 vh-80">
             <Row>
               <Col lg={3}>
                 <ListGroup className="pb-4">

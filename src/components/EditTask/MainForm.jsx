@@ -17,6 +17,11 @@ const taskStatusOptions = taskStatus.map(taskStatus => ({
   label: taskStatus.name,
 }));
 
+taskStatusOptions.unshift({
+  label: '',
+  value: '',
+});
+
 categoryOptions.unshift({
   label: 'Выберите категорию',
   value: '',
@@ -27,6 +32,10 @@ export const validateMainFields = (values, errors) => {
 
   if (!values.title || (values.title.length < 10 || values.title.length > 100)) {
     errors.title = 'от 10 до 100 символов';
+  }
+
+  if (!values.status) {
+    errors.category = '';
   }
 
   if (!values.category) {

@@ -48,6 +48,7 @@ router.post('/registration', async (req, res, next) => {
         type: USER_TYPE_ID,
         login,
         email,
+        balance: 0,
         password: hash,
       });
 
