@@ -75,5 +75,8 @@
     "start:wpdev": "webpack-dev-server --host 0.0.0.0 --mode development",
     "build": "NODE_ENV=production node_modules/.bin/webpack -p",
     "lint": "eslint src server --ext=js,jsx"
+  },
+  "engines": {
+    "node": ">=14.10.1"
   }
 }

@@ -38,3 +38,9 @@ docker start d69940715251 // запустить контейнер
 ```
 docker run --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v /var/www/project/docker_postgres:/var/lib/postgresql/data postgres
 ```
+
+##Node
+```
+nvm install 14.10.1
+nvm alias default 14.10.1
+```
