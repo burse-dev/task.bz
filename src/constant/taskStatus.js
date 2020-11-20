@@ -11,8 +11,8 @@ export default [
     id: SUSPENDED_TASK_STATUS_ID,
     name: 'Приостановлено',
   },
-  // {
-  //   id: REMOVED_TASK_STATUS_ID,
-  //   name: 'Удалено',
-  // },
+  {
+    id: REMOVED_TASK_STATUS_ID,
+    name: 'Удалено',
+  },
 ];
