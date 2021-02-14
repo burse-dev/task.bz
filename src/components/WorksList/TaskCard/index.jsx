@@ -32,7 +32,7 @@ const Title = styled.div`
 `;
 
 const Category = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #888;
 `;
 

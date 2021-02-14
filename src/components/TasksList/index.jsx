@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Container, Col, Row, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
+import TableHeaderCard from './TableHeaderCard';
 import TaskCard from './TaskCard';
 import Preloader from '../generic/Preloader';
 import {
@@ -79,6 +80,7 @@ class TasksList extends Component {
               {loading && (
                 <Preloader />
               )}
+              <TableHeaderCard />
               {!loading && tasks.map((task) => {
                 const total = task.limitTotal || null;
                 let inWork = 0;

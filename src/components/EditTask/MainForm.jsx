@@ -43,15 +43,15 @@ export const validateMainFields = (values, errors) => {
   }
 
   if (
-    !values.description || (values.description.length < 100 || values.description.length > 3000)
+    !values.description || (values.description.length < 10 || values.description.length > 3000)
   ) {
-    errors.description = 'от 100 до 3000 символов';
+    errors.description = 'от 10 до 3000 символов';
   }
 
   if (
-    !values.reportRules || (values.reportRules.length < 100 || values.reportRules.length > 3000)
+    !values.reportRules || (values.reportRules.length < 10 || values.reportRules.length > 3000)
   ) {
-    errors.reportRules = 'от 100 до 3000 символов';
+    errors.reportRules = 'от 10 до 3000 символов';
   }
 
   if (!values.price || values.price <= 0) {

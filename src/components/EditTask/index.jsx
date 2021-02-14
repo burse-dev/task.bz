@@ -22,7 +22,7 @@ const validate = (values) => {
   return errors;
 };
 
-const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew }) => {
+const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, saved }) => {
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
   const [triedToSubmit, setTriedToSubmit] = useState(false);
@@ -50,6 +50,12 @@ const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew }) =>
       {error && triedToSubmit && (
         <Alert variant="danger">
           {error}
+        </Alert>
+      )}
+
+      {saved && (
+        <Alert variant="success">
+          Задача добавлена
         </Alert>
       )}
 
@@ -106,6 +112,7 @@ class EditTask extends Component {
 
     this.state = {
       loading: true,
+      saved: false,
       task: {},
     };
   }
@@ -120,6 +127,16 @@ class EditTask extends Component {
     this.setState({
       loading: false,
     });
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevState.redirect) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        redirect: false,
+        saved: true,
+      }, () => this.load());
+    }
   };
 
   load = () => {
@@ -238,7 +255,7 @@ class EditTask extends Component {
   };
 
   render() {
-    const { redirect, task, loading } = this.state;
+    const { redirect, task, loading, saved } = this.state;
 
     if (loading) {
       return (
@@ -270,6 +287,7 @@ class EditTask extends Component {
               </Col>
               <Col lg={6}>
                 <EditTaskFormRedux
+                  saved={saved}
                   handleDelete={this.handleDelete}
                   onSubmit={this.handleSubmitForm}
                   initialValues={task.id ? task : {

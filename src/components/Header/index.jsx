@@ -14,9 +14,15 @@ import lockIcon from './lock-icon.svg';
 import { logOut } from '../../actions';
 import loadUserData from '../../actions/user';
 import { ADMIN_TYPE_ID, USER_TYPE_ID } from '../../constant/userType';
+import logo from './logo.svg';
 
 const LockIcon = styled.img`
   width: 15px;
+  margin-right: 0px;
+`;
+
+const LoggIcon = styled.img`
+  width: 35px;
   margin-right: 0px;
 `;
 
@@ -58,6 +64,7 @@ class Header extends Component {
     return (
       <Navbar bg="light" expand="lg" className="sticky-top">
         <Container>
+          <LoggIcon src={logo} alt="task.bz" />
           <LinkContainer to="/">
             <Navbar.Brand>Task.bz</Navbar.Brand>
           </LinkContainer>

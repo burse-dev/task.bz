@@ -26,6 +26,36 @@ const Wrapper = styled.div`
   }
 `;
 
+const Col = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const NameCol = styled.div`
+  width: 25%;
+`;
+
+const PriceCol = styled(Col)`
+  width: 10%;
+`;
+
+const StatusCol = styled(Col)`
+  width: 20%;
+`;
+
+const DoneCol = styled(Col)`
+  width: 15%;
+`;
+
+const InWorkCol = styled(Col)`
+  width: 15%;
+`;
+
+const EditCol = styled.div`
+  width: 15%;
+  text-align: right;
+`;
+
 const Title = styled.div`
   font-size: 16px;
   color: #333;
@@ -35,7 +65,7 @@ const Title = styled.div`
 `;
 
 const Category = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #888;
 `;
 
@@ -57,7 +87,7 @@ export default ({
     to={`/tasks-list/check/${id}`}
     className="mt-1 rounded"
   >
-    <div className="w-25">
+    <NameCol>
       <Title
         className="d-flex align-items-center"
       >
@@ -70,31 +100,31 @@ export default ({
         {' '}
         {getCategoryById(category).name}
       </Category>
-    </div>
-    <div className="mr-4 ml-3">
+    </NameCol>
+    <PriceCol>
       <Price price={price} />
-    </div>
-    <div className="w-25">
+    </PriceCol>
+    <StatusCol>
       <TaskStatusBadge statusId={statusId} />
-    </div>
-    <div className="w-25">
+    </StatusCol>
+    <DoneCol>
       <Tooltip
         content="Выполнено"
       >
         {successCount}
       </Tooltip>
       {totalCount && (
-      <>
-        {' / '}
-        <Tooltip
-          content="Общее число"
-        >
-          {totalCount}
-        </Tooltip>
-      </>
+        <>
+          {' / '}
+          <Tooltip
+            content="Общее число"
+          >
+            {totalCount}
+          </Tooltip>
+        </>
       )}
-    </div>
-    <div className="w-25">
+    </DoneCol>
+    <InWorkCol>
       <Tooltip
         content="На проверке"
       >
@@ -106,11 +136,11 @@ export default ({
       >
         {inWorkCount}
       </Tooltip>
-    </div>
-    <div>
+    </InWorkCol>
+    <EditCol>
       <Link to={`/tasks-list/edit/${id}`}>
         <SmallButton icon={editIcon} />
       </Link>
-    </div>
+    </EditCol>
   </Wrapper>
 );

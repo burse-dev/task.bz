@@ -318,7 +318,7 @@ class Task extends Component {
                     <div className="alert alert-info" role="alert">
                       <h4 className="alert-heading">На проверке</h4>
                       {/* eslint-disable-next-line max-len */}
-                      <p>Заказчик должен проверить и подтвердить ваш отчет, если этого не произойдет в течение 24 часов, задание будует считаться выполненным</p>
+                      <p>Заказчик должен проверить и подтвердить ваш отчет, если этого не произойдет в течение 72 часов, задание будует считаться выполненным</p>
                       <hr />
                       <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
                     </div>
