@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
+import { LinkContainer } from 'react-router-bootstrap';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -71,9 +72,34 @@ class Login extends Component {
     return (
       <>
         <Container className="vh-80">
-          <Row className="pt-5 justify-content-center align-items-center">
+          <Row className="pt-5 justify-content-center">
+            <Col lg="6">
+              <h3>ЗАРАБАТЫВАЙТЕ В ИНТЕРНЕТЕ!</h3>
+              <span className="p-1 d-inline-block bg-danger text-white">
+                ДЕНЬГИ ЗА ВСЁ, ЧТО ВЫ РАНЬШЕ ДЕЛАЛИ БЕСПЛАТНО!
+              </span>
+              <ul className="pt-4">
+                <li>За просмотр сайтов</li>
+                <li>За лайки и комментарии</li>
+                <li>За регистрацию или подписку</li>
+                <li>За просмотр рекламы</li>
+                <li>И многое другое</li>
+              </ul>
+              <p className="pr-lg-5">
+                {/* eslint-disable-next-line max-len */}
+                Вас ждут тысячи заданий (небольших поручений рекламодателей) на любой вкус и цвет, делайте всё, что и раньше, на любимых сайтах и в соц. сетях, но теперь ещё и за деньги!
+              </p>
+
+              <div className="text-center text-lg-left pb-5">
+                <LinkContainer to="/login/registration">
+                  <Button variant="success" type="submit">
+                    Начать зарабатывать
+                  </Button>
+                </LinkContainer>
+              </div>
+            </Col>
             <Col lg="5">
-              <Card>
+              <Card className="mb-5">
                 <Card.Header>Вход в систему</Card.Header>
                 <Card.Body>
 

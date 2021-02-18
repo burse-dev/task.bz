@@ -20,4 +20,8 @@ export default [
     id: LIKE_CATEGORY_ID,
     name: 'Лайк',
   },
+  {
+    id: LIKE_CATEGORY_ID,
+    name: 'Только клики',
+  },
 ];

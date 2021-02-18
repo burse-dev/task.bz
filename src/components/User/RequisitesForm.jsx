@@ -33,10 +33,26 @@ const validate = (values) => {
   return errors;
 };
 
+const filterAvailableRequisitesTypes = (
+  requisitesTypeOptions, requisites,
+) => requisitesTypeOptions.filter((requisitesType) => {
+  for (let i = 0; requisites.length > i; i += 1) {
+    if (requisitesType.value === requisites[i].type) {
+      return false;
+    }
+  }
+
+  return true;
+});
+
 const RequisitesForm = ({ handleSubmit, onSubmit, reset, requisites }) => {
   const submitForm = values => onSubmit(values).then(() => {
     reset();
   });
+
+  const filteredRequisitesTypeOptions = filterAvailableRequisitesTypes(
+    requisitesTypeOptions, requisites,
+  );
 
   return (
     <>
@@ -45,7 +61,7 @@ const RequisitesForm = ({ handleSubmit, onSubmit, reset, requisites }) => {
           <Form.Label>Способ выплат</Form.Label>
           <Field
             name="type"
-            options={requisitesTypeOptions}
+            options={filteredRequisitesTypeOptions}
             component={FormControlSelect}
           />
         </Form.Group>

@@ -123,6 +123,7 @@ class Tickets extends Component {
                     <th>Дата</th>
                     <th>Пользователь</th>
                     <th>Баланс</th>
+                    <th>Тип</th>
                     <th>Реквизиты</th>
                     <th>Сумма</th>
                     <th>Статус</th>
@@ -136,6 +137,7 @@ class Tickets extends Component {
                       <td>{ticket.user.login}</td>
                       <td>{ticket.user.balance}</td>
                       <td>{getTypeNameById(ticket.requisite.type, requisitesType)}</td>
+                      <td>{ticket.requisite.value}</td>
                       <td>{ticket.value}</td>
                       <td>
                         <TicketStatusBadge statusId={ticket.status} />
