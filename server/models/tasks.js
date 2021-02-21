@@ -12,6 +12,7 @@ const Tasks = db.define('task', {
   executionTimeForUserLimit: Sequelize.INTEGER,
   limitInHour: Sequelize.INTEGER,
   limitForUser: Sequelize.INTEGER,
+  repeatedExecutionInterval: Sequelize.INTEGER,
   limitInDay: Sequelize.INTEGER,
   limitTotal: Sequelize.INTEGER,
   status: Sequelize.INTEGER,

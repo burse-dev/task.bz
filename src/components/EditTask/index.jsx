@@ -4,9 +4,10 @@ import { Redirect } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { ListGroup, Tab } from 'react-bootstrap';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
-import { reduxForm } from 'redux-form';
+import { reduxForm, formValueSelector } from 'redux-form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { RestrictionsFields, validateRestrictionsFields } from './RestrictionsForm';
@@ -22,7 +23,8 @@ const validate = (values) => {
   return errors;
 };
 
-const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, saved }) => {
+// eslint-disable-next-line max-len
+const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, saved, limitForUser }) => {
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
   const [triedToSubmit, setTriedToSubmit] = useState(false);
@@ -65,7 +67,7 @@ const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, save
         </Tab.Pane>
 
         <Tab.Pane eventKey="#restrictions">
-          <RestrictionsFields />
+          <RestrictionsFields limitForUser={limitForUser} />
         </Tab.Pane>
       </Tab.Content>
 
@@ -100,11 +102,23 @@ const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, save
   );
 };
 
-const EditTaskFormRedux = reduxForm({
-  form: 'editTaskForm',
-  enableReinitialize: true,
-  validate,
-})(EditTaskForm);
+const selector = formValueSelector('editTaskForm');
+
+const EditTaskFormRedux = compose(
+  connect(
+    (state) => {
+      const limitForUser = selector(state, 'limitForUser');
+      return {
+        limitForUser,
+      };
+    },
+  ),
+  reduxForm({
+    form: 'editTaskForm',
+    enableReinitialize: true,
+    validate,
+  }),
+)(EditTaskForm);
 
 class EditTask extends Component {
   constructor() {
@@ -197,6 +211,10 @@ class EditTask extends Component {
 
     if (values.limitForUser) {
       formData.append('limitForUser', values.limitForUser);
+    }
+
+    if (values.repeatedExecutionInterval) {
+      formData.append('repeatedExecutionInterval', values.repeatedExecutionInterval);
     }
 
     if (values.limitInHour) {

@@ -4,6 +4,29 @@ import Form from 'react-bootstrap/Form';
 import { Field } from 'redux-form';
 import FormControl from '../generic/Form/FormControlRedux';
 import DateTimePicker from '../generic/Form/DateTimePickerRedux';
+import FormControlSelect from '../generic/Form/FormControlSelectRedux';
+
+const ONE_TIME_EXECUTION_TYPE_ID = 1;
+const REPEATED_EXECUTION_TYPE_ID = 2;
+
+const repeatedExecutionIntervalsOptions = [
+  { label: 'Можно выполнять сразу после прверки', value: 0 },
+  { label: 'Через 1 час поле подачи предыдущего отчета', value: 1 },
+  { label: 'Через 3 часа после подачи предыдущего отчета', value: 2 },
+  { label: 'Через 6 часов после подачи предыдущего отчета', value: 3 },
+  { label: 'Через 12 часов после подачи предыдущего отчета', value: 4 },
+  { label: 'Через 1 сутки после подачи предыдущего отчета', value: 5 },
+  { label: 'Через 2 сутки после подачи предыдущего отчета', value: 6 },
+  { label: 'Через 3 суток после подачи предыдущего отчета', value: 7 },
+  { label: 'Через 5 суток после подачи предыдущего отчета', value: 8 },
+  { label: 'Через 10 суток после подачи предыдущего отчета', value: 9 },
+];
+
+const limitOptions = [{
+  label: 'Один пользователь - одно исполнение', value: ONE_TIME_EXECUTION_TYPE_ID,
+}, {
+  label: 'Можно выполнять многократно', value: REPEATED_EXECUTION_TYPE_ID,
+}];
 
 export const validateRestrictionsFields = (values, errors) => {
   const inputErrorsCount = Object.keys(errors).length;
@@ -33,7 +56,7 @@ export const validateRestrictionsFields = (values, errors) => {
   return errors;
 };
 
-export const RestrictionsFields = () => (
+export const RestrictionsFields = ({ limitForUser }) => (
   <>
     <Form.Group>
       <Form.Label>Время выполнения (часы)</Form.Label>
@@ -77,18 +100,27 @@ export const RestrictionsFields = () => (
     </Form.Group>
 
     <Form.Group>
-      <Form.Label>Лимит от исполнителя</Form.Label>
+      <Form.Label>Технология выполнения</Form.Label>
       <Field
         name="limitForUser"
-        component={FormControl}
-        placeholder="Оставьте пустым, если не требуется"
-        type="number"
-        min="0"
+        component={FormControlSelect}
+        options={limitOptions}
       />
       <Form.Text className="text-muted">
         Сколько раз может выполнить задание каждый исполнитель
       </Form.Text>
     </Form.Group>
+
+    {REPEATED_EXECUTION_TYPE_ID === parseInt(limitForUser, 10) && (
+      <Form.Group>
+        <Form.Label>Интервалы многократных выполнений</Form.Label>
+        <Field
+          name="repeatedExecutionInterval"
+          component={FormControlSelect}
+          options={repeatedExecutionIntervalsOptions}
+        />
+      </Form.Group>
+    )}
 
     <Form.Group>
       <Form.Label>Общий лимит выполнений</Form.Label>
@@ -103,7 +135,6 @@ export const RestrictionsFields = () => (
         Задача становится недоступной при достижении лимита выполнений
       </Form.Text>
     </Form.Group>
-
 
     <Form.Group>
       <Form.Label>Время начала</Form.Label>
