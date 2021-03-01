@@ -28,6 +28,7 @@ router.get('/feedTasks', async (req, res, next) => {
         'status',
         'price',
         'description',
+        'executionType',
       ],
       order: [
         ['createdAt', 'DESC'],
@@ -53,6 +54,7 @@ router.get('/tasks', async (req, res, next) => {
         'status',
         'price',
         'limitTotal',
+        'executionType',
       ],
       include: [{
         model: UserTasks,

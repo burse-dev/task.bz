@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default () => (
   <div className="container">
@@ -14,19 +15,20 @@ export default () => (
             <li><a className="text-muted" href="/">Политика конфиденциальности</a></li>
             <li><a className="text-muted" href="/">Правила пользования</a></li>
             <li><a className="text-muted" href="/">Правила выплат</a></li>
+            <li><Link className="text-muted" to="/offer">Оферта</Link></li>
           </ul>
         </div>
         <div className="col-6 col-md">
           <h5>Помощь</h5>
           <ul className="list-unstyled text-small">
-            <li><a className="text-muted" href="/">Служба поддержки</a></li>
+            <li><Link className="text-muted" to="/help">Служба поддержки</Link></li>
             <li><a className="text-muted" href="/">База знаний</a></li>
           </ul>
         </div>
         <div className="col-6 col-md">
           <h5>О нас</h5>
           <ul className="list-unstyled text-small">
-            <li><a className="text-muted" href="/">О проекте</a></li>
+            <li><Link className="text-muted" to="/about">О проекте</Link></li>
             <li><a className="text-muted" href="/">Контакты</a></li>
           </ul>
         </div>

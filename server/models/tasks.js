@@ -9,12 +9,12 @@ const Tasks = db.define('task', {
   description: Sequelize.TEXT,
   reportRules: Sequelize.TEXT,
   price: Sequelize.INTEGER,
-  executionTimeForUserLimit: Sequelize.INTEGER,
-  limitInHour: Sequelize.INTEGER,
-  limitForUser: Sequelize.INTEGER,
-  repeatedExecutionInterval: Sequelize.INTEGER,
-  limitInDay: Sequelize.INTEGER,
-  limitTotal: Sequelize.INTEGER,
+  executionTimeLimit: Sequelize.INTEGER, // время исполнения
+  limitInHour: Sequelize.INTEGER, // лимит исполнений в час
+  limitInDay: Sequelize.INTEGER, // лимит исполнений в день
+  limitTotal: Sequelize.INTEGER, // общий лимит на задачу
+  executionType: Sequelize.INTEGER,
+  executionInterval: Sequelize.INTEGER,
   status: Sequelize.INTEGER,
   startTime: Sequelize.DATE,
   endTime: Sequelize.DATE,

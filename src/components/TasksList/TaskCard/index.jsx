@@ -7,6 +7,7 @@ import categories from '../../../constant/category';
 import TaskStatusBadge from '../../generic/TaskStatusBadge';
 import SmallButton from '../../generic/Buttons/SmallButton';
 import editIcon from '../../img/editIcon.svg';
+import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
 const Wrapper = styled.div`
   display: flex;
@@ -77,6 +78,7 @@ export default ({
   category,
   price,
   statusId,
+  executionType,
   inWorkCount,
   pendingCount,
   successCount,
@@ -99,6 +101,9 @@ export default ({
         Категория:
         {' '}
         {getCategoryById(category).name}
+      </Category>
+      <Category>
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
       </Category>
     </NameCol>
     <PriceCol>

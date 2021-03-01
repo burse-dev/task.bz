@@ -13,6 +13,9 @@ import TasksList from './TasksList';
 import TaskCheck from './TasksList/Check';
 import WorksList from './WorksList';
 import Tickets from './Tickets';
+import About from './About';
+import Offer from './Offer';
+import Help from './Help';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -43,6 +46,10 @@ export default () => (
       <Route exact path="/login" component={Login} />
       <Route exact path="/login/recovery" component={Recovery} />
       <Route exact path="/login/registration" component={Registration} />
+
+      <Route exact path="/about" component={About} />
+      <Route exact path="/offer" component={Offer} />
+      <Route exact path="/help" component={Help} />
 
       <PrivateRoute exact path="/task/:id" component={Task} />
 

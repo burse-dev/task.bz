@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Price from '../../generic/Price';
 import TaskExecutionStatusBadge from '../../generic/TaskExecutionStatusBadge';
 import categories from '../../../constant/category';
+import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,8 +39,7 @@ const Category = styled.div`
 
 const getCategoryById = id => categories.find(category => category.id === id);
 
-
-export default ({ to, title, statusId, category, price }) => (
+export default ({ to, title, statusId, category, price, executionType }) => (
   <Wrapper
     as={Link}
     to={to}
@@ -57,6 +57,9 @@ export default ({ to, title, statusId, category, price }) => (
         Категория:
         {' '}
         {getCategoryById(category).name}
+      </Category>
+      <Category>
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
       </Category>
     </div>
     <div className="mr-4 ml-3">

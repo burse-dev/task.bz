@@ -24,7 +24,7 @@ const validate = (values) => {
 };
 
 // eslint-disable-next-line max-len
-const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, saved, limitForUser }) => {
+const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, saved, executionType }) => {
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
   const [triedToSubmit, setTriedToSubmit] = useState(false);
@@ -67,7 +67,7 @@ const EditTaskForm = ({ handleSubmit, handleDelete, onSubmit, error, isNew, save
         </Tab.Pane>
 
         <Tab.Pane eventKey="#restrictions">
-          <RestrictionsFields limitForUser={limitForUser} />
+          <RestrictionsFields executionType={executionType} />
         </Tab.Pane>
       </Tab.Content>
 
@@ -107,9 +107,9 @@ const selector = formValueSelector('editTaskForm');
 const EditTaskFormRedux = compose(
   connect(
     (state) => {
-      const limitForUser = selector(state, 'limitForUser');
+      const executionType = selector(state, 'executionType');
       return {
-        limitForUser,
+        executionType,
       };
     },
   ),
@@ -201,24 +201,28 @@ class EditTask extends Component {
     formData.append('price', values.price);
     formData.append('status', values.status);
 
-    if (values.executionTimeForUserLimit) {
-      formData.append('executionTimeForUserLimit', values.executionTimeForUserLimit);
+    if (values.executionTimeLimit) {
+      formData.append('executionTimeLimit', values.executionTimeLimit);
     }
 
     if (values.limitInDay) {
       formData.append('limitInDay', values.limitInDay);
     }
 
-    if (values.limitForUser) {
-      formData.append('limitForUser', values.limitForUser);
-    }
-
-    if (values.repeatedExecutionInterval) {
-      formData.append('repeatedExecutionInterval', values.repeatedExecutionInterval);
-    }
-
     if (values.limitInHour) {
       formData.append('limitInHour', values.limitInHour);
+    }
+
+    if (values.limitTotal) {
+      formData.append('limitTotal', values.limitTotal);
+    }
+
+    if (values.executionType) {
+      formData.append('executionType', values.executionType);
+    }
+
+    if (values.executionInterval) {
+      formData.append('executionInterval', values.executionInterval);
     }
 
     if (values.startTime) {

@@ -21,6 +21,8 @@ import {
   REJECTED_STATUS_ID,
   OVERDUE_STATUS_ID, SUCCESS_STATUS_ID,
 } from '../../constant/taskExecutionStatus';
+import { REPEATED_TYPE_ID } from '../../constant/taskExecutionType';
+import taskExecutionIntervalType from '../../constant/taskExecutionIntervalType';
 
 const Title = styled.h1`
   font-size: 28px;
@@ -273,8 +275,15 @@ class Task extends Component {
 
                 <section>
                   <b>Время на выполнение: </b>
-                  {`${task.executionTimeForUserLimit} ${hoursCountEnding(task.executionTimeForUserLimit)}`}
+                  {task.executionTimeLimit ? `${task.executionTimeLimit} ${hoursCountEnding(task.executionTimeLimit)}` : '-'}
                 </section>
+
+                {task.executionType === REPEATED_TYPE_ID && (
+                  <section>
+                    <b>Повторное выполнение: </b>
+                    {getTypeNameById(task.executionInterval, taskExecutionIntervalType)}
+                  </section>
+                )}
 
                 {task.endTime && (
                   <section className="pt-2">
@@ -283,6 +292,7 @@ class Task extends Component {
                   </section>
                 )}
 
+                {/* {(!userTask.status || userTask.status === SUCCESS_STATUS_ID) && ( */}
                 {!userTask.status && (
                   <Button onClick={this.handleClickMakeTask} variant="primary" className="mt-4">Выполнить задание</Button>
                 )}

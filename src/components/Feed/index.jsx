@@ -89,6 +89,7 @@ class Feed extends Component {
                   description={task.description}
                   category={task.category}
                   price={task.price}
+                  executionType={task.executionType}
                 />
               ))}
             </Col>

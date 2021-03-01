@@ -49,6 +49,7 @@ app.use('/api', require('./api/user').default);
 app.use('/api', require('./api/tasks').default);
 app.use('/api', require('./api/tickets').default);
 app.use('/api', require('./api/admins').default);
+app.use('/api', require('./api/help').default);
 
 app.get('/*', (req, res) => {
   const filePath = path.resolve(__dirname, '..', 'build', 'index.html');

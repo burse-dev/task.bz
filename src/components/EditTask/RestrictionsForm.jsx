@@ -5,28 +5,18 @@ import { Field } from 'redux-form';
 import FormControl from '../generic/Form/FormControlRedux';
 import DateTimePicker from '../generic/Form/DateTimePickerRedux';
 import FormControlSelect from '../generic/Form/FormControlSelectRedux';
+import executionType, { REPEATED_TYPE_ID } from '../../constant/taskExecutionType';
+import executionIntervalType from '../../constant/taskExecutionIntervalType';
 
-const ONE_TIME_EXECUTION_TYPE_ID = 1;
-const REPEATED_EXECUTION_TYPE_ID = 2;
+const executionIntervalsOptions = executionIntervalType.map(type => ({
+  value: type.id,
+  label: type.name,
+}));
 
-const repeatedExecutionIntervalsOptions = [
-  { label: 'Можно выполнять сразу после прверки', value: 0 },
-  { label: 'Через 1 час поле подачи предыдущего отчета', value: 1 },
-  { label: 'Через 3 часа после подачи предыдущего отчета', value: 2 },
-  { label: 'Через 6 часов после подачи предыдущего отчета', value: 3 },
-  { label: 'Через 12 часов после подачи предыдущего отчета', value: 4 },
-  { label: 'Через 1 сутки после подачи предыдущего отчета', value: 5 },
-  { label: 'Через 2 сутки после подачи предыдущего отчета', value: 6 },
-  { label: 'Через 3 суток после подачи предыдущего отчета', value: 7 },
-  { label: 'Через 5 суток после подачи предыдущего отчета', value: 8 },
-  { label: 'Через 10 суток после подачи предыдущего отчета', value: 9 },
-];
-
-const limitOptions = [{
-  label: 'Один пользователь - одно исполнение', value: ONE_TIME_EXECUTION_TYPE_ID,
-}, {
-  label: 'Можно выполнять многократно', value: REPEATED_EXECUTION_TYPE_ID,
-}];
+const executionTypeOptions = executionType.map(type => ({
+  value: type.id,
+  label: type.name,
+}));
 
 export const validateRestrictionsFields = (values, errors) => {
   const inputErrorsCount = Object.keys(errors).length;
@@ -42,8 +32,8 @@ export const validateRestrictionsFields = (values, errors) => {
     errors.limitInHour = true;
   }
 
-  if (values.limitForUser && isNaN(values.limitForUser)) {
-    errors.limitForUser = true;
+  if (values.executionType && isNaN(values.executionType)) {
+    errors.executionType = true;
   }
 
   const outputErrorsCount = Object.keys(errors).length;
@@ -56,12 +46,12 @@ export const validateRestrictionsFields = (values, errors) => {
   return errors;
 };
 
-export const RestrictionsFields = ({ limitForUser }) => (
+export const RestrictionsFields = ({ executionType }) => (
   <>
     <Form.Group>
       <Form.Label>Время выполнения (часы)</Form.Label>
       <Field
-        name="executionTimeForUserLimit"
+        name="executionTimeLimit"
         component={FormControl}
         type="number"
         min="0"
@@ -102,22 +92,22 @@ export const RestrictionsFields = ({ limitForUser }) => (
     <Form.Group>
       <Form.Label>Технология выполнения</Form.Label>
       <Field
-        name="limitForUser"
+        name="executionType"
         component={FormControlSelect}
-        options={limitOptions}
+        options={executionTypeOptions}
       />
       <Form.Text className="text-muted">
         Сколько раз может выполнить задание каждый исполнитель
       </Form.Text>
     </Form.Group>
 
-    {REPEATED_EXECUTION_TYPE_ID === parseInt(limitForUser, 10) && (
+    {REPEATED_TYPE_ID === parseInt(executionType, 10) && (
       <Form.Group>
         <Form.Label>Интервалы многократных выполнений</Form.Label>
         <Field
-          name="repeatedExecutionInterval"
+          name="executionInterval"
           component={FormControlSelect}
-          options={repeatedExecutionIntervalsOptions}
+          options={executionIntervalsOptions}
         />
       </Form.Group>
     )}

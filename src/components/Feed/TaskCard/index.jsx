@@ -6,6 +6,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import Price from '../../generic/Price';
 import Pre from '../../generic/Pre';
 import categories from '../../../constant/category';
+import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -29,13 +30,13 @@ const Description = styled.div`
 `;
 
 const Category = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #888;
 `;
 
 const getCategoryById = id => categories.find(category => category.id === id);
 
-export default ({ title, id, description, category, price }) => {
+export default ({ title, id, description, category, price, executionType }) => {
   const [open, setOpen] = useState(false);
   return (
     <Wrapper
@@ -56,6 +57,9 @@ export default ({ title, id, description, category, price }) => {
         Категория:
         {' '}
         {getCategoryById(category).name}
+      </Category>
+      <Category>
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
       </Category>
       <Collapse in={open}>
         <Description id="example-collapse-text">

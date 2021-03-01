@@ -116,6 +116,7 @@ class TasksList extends Component {
                     category={task.category}
                     price={task.price}
                     statusId={task.status}
+                    executionType={task.executionType}
                   />
                 );
               })}

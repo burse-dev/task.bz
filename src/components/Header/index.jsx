@@ -21,8 +21,9 @@ const LockIcon = styled.img`
   margin-right: 0px;
 `;
 
-const LoggIcon = styled.img`
-  width: 35px;
+const LogoIcon = styled.img`
+  cursor: pointer;
+  width: 125px;
   margin-right: 0px;
 `;
 
@@ -64,10 +65,12 @@ class Header extends Component {
     return (
       <Navbar bg="light" expand="lg" className="sticky-top">
         <Container>
-          <LoggIcon src={logo} alt="task.bz" />
           <LinkContainer to="/">
-            <Navbar.Brand>Task.bz</Navbar.Brand>
+            <LogoIcon src={logo} alt="task.bz" />
           </LinkContainer>
+          {/* <LinkContainer to="/"> */}
+          {/*  <Navbar.Brand>Task.bz</Navbar.Brand> */}
+          {/* </LinkContainer> */}
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
           <Navbar.Collapse id="basic-navbar-nav">
