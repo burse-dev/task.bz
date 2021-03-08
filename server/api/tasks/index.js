@@ -128,9 +128,9 @@ router.get('/task/updateStatus', async (req, res, next) => {
         [Op.and]: {
           status: IN_WORK_TASK_STATUS_ID,
           endTime: {
-            [Op.or]: {
+            [Op.and]: {
               [Op.lte]: new Date(),
-              [Op.eq]: null,
+              [Op.ne]: null,
             },
           },
         },
@@ -234,13 +234,6 @@ router.post('/task/checkTaskAvailability', passport.authenticate('jwt', { sessio
       // если многоразовое выполнение + отчет отправлен + прошел интервал полсе пред. отчета
       const hours = EXECUTION_INTERVALS_VALUES_IN_HOURS[Task.executionInterval];
       const dateInterval = moment(UserTask.readyDate).add(hours, 'hours').toDate();
-
-      console.log(hours);
-      console.log(dateInterval);
-      console.log(new Date());
-      console.log(moment().toDate());
-      console.log(Task.executionInterval > AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID);
-      console.log((new Date()).getTime() > dateInterval.getTime());
 
       if (
         Task.executionInterval > AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
