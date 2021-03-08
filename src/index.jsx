@@ -1,5 +1,6 @@
 import '@babel/polyfill';
 import React from 'react';
+import { YMInitializer } from 'react-yandex-metrika';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -26,6 +27,7 @@ ReactDOM.render(
     },
     applyMiddleware(reduxThunk))}
   >
+    <YMInitializer accounts={[73253464]} options={{ webvisor: true }} />
     <Router>
       <div>
         <Route component={ScrollToTop} />

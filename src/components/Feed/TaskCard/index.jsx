@@ -59,7 +59,7 @@ export default ({ title, id, description, category, price, executionType }) => {
         {getCategoryById(category).name}
       </Category>
       <Category>
-        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
       </Category>
       <Collapse in={open}>
         <Description id="example-collapse-text">

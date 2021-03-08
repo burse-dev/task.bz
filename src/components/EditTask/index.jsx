@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { RestrictionsFields, validateRestrictionsFields } from './RestrictionsForm';
 import { MainFields, validateMainFields } from './MainForm';
+import { ONE_TIME_TYPE_ID } from '../../constant/taskExecutionType';
 import Preloader from '../generic/Preloader';
 
 const validate = (values) => {
@@ -217,9 +218,7 @@ class EditTask extends Component {
       formData.append('limitTotal', values.limitTotal);
     }
 
-    if (values.executionType) {
-      formData.append('executionType', values.executionType);
-    }
+    formData.append('executionType', values.executionType || ONE_TIME_TYPE_ID);
 
     if (values.executionInterval) {
       formData.append('executionInterval', values.executionInterval);

@@ -1,6 +1,7 @@
 export const IN_WORK_TASK_STATUS_ID = 1;
 export const REMOVED_TASK_STATUS_ID = 2;
 export const SUSPENDED_TASK_STATUS_ID = 3;
+export const FINISHED_TASK_STATUS_ID = 4;
 
 export default [
   {
@@ -14,5 +15,9 @@ export default [
   {
     id: REMOVED_TASK_STATUS_ID,
     name: 'Удалено',
+  },
+  {
+    id: FINISHED_TASK_STATUS_ID,
+    name: 'Завершено',
   },
 ];

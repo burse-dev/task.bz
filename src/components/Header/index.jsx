@@ -120,27 +120,29 @@ class Header extends Component {
                 )}
 
                 {user.type === USER_TYPE_ID && (
-                  <Nav>
-                    <NavDropdown
-                      title={(
-                        <span>
-                          <UserIcon src={userIcon} className="img-responsive pull-right" alt="user" />
-                          {user.login}
-                        </span>
-                      )}
-                    >
-                      <NavDropdown.Item>
-                        Баланс:
-                        {' '}
-                        {user.balance}
-                      </NavDropdown.Item>
-                      <LinkContainer to="/user">
-                        <NavDropdown.Item>Профиль</NavDropdown.Item>
+                  <>
+                    <Nav>
+                      <LinkContainer to="/user#payments">
+                        <Nav.Link href="/user#payments">{`Баланс: ${user.balance}`}</Nav.Link>
                       </LinkContainer>
-                      <NavDropdown.Divider />
-                      <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
-                    </NavDropdown>
-                  </Nav>
+                    </Nav>
+                    <Nav>
+                      <NavDropdown
+                        title={(
+                          <span>
+                            <UserIcon src={userIcon} className="img-responsive pull-right" alt="user" />
+                            {user.login}
+                          </span>
+                        )}
+                      >
+                        <LinkContainer to="/user">
+                          <NavDropdown.Item>Профиль</NavDropdown.Item>
+                        </LinkContainer>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
+                      </NavDropdown>
+                    </Nav>
+                  </>
                 )}
               </>
             ) : (

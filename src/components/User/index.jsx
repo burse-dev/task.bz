@@ -21,13 +21,19 @@ class User extends Component {
       tickets: [],
       accruals: [],
       userData: null,
+      activeTabKey: '#profile',
     };
   }
 
   async componentDidMount() {
-    await this.setState({
-      loading: true,
-    });
+    const { location: { hash } } = this.props;
+
+    if (hash) {
+      await this.setState({
+        loading: true,
+        activeTabKey: hash,
+      });
+    }
 
     await this.load();
 
@@ -94,6 +100,12 @@ class User extends Component {
           accruals: responseData,
         });
       });
+  };
+
+  handleClickToTab = (key) => {
+    this.setState({
+      activeTabKey: key,
+    });
   };
 
   handleSubmitProfileForm = async (values) => {
@@ -174,7 +186,7 @@ class User extends Component {
   };
 
   render() {
-    const { loading, userData, tickets, accruals } = this.state;
+    const { loading, userData, tickets, accruals, activeTabKey } = this.state;
     const { user, authToken } = this.props;
 
     if (!authToken) {
@@ -188,7 +200,12 @@ class User extends Component {
     return (
       <>
         <div className="pt-3 pt-lg-5" />
-        <Tab.Container id="list-group-tabs-example" defaultActiveKey="#profile">
+        <Tab.Container
+          // id="list-group-tabs-example"
+          activeKey={activeTabKey}
+          onSelect={this.handleClickToTab}
+          // defaultActiveKey="#profile"
+        >
           <Container className="pt-3 pb-5 vh-80">
             <Row>
               <Col lg={3}>

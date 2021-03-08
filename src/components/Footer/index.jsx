@@ -29,7 +29,7 @@ export default () => (
           <h5>О нас</h5>
           <ul className="list-unstyled text-small">
             <li><Link className="text-muted" to="/about">О проекте</Link></li>
-            <li><a className="text-muted" href="/">Контакты</a></li>
+            <li><Link className="text-muted" to="/help">Контакты</Link></li>
           </ul>
         </div>
       </div>

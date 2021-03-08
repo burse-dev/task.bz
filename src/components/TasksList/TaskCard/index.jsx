@@ -103,7 +103,7 @@ export default ({
         {getCategoryById(category).name}
       </Category>
       <Category>
-        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
       </Category>
     </NameCol>
     <PriceCol>

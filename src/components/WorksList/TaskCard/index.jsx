@@ -59,7 +59,7 @@ export default ({ to, title, statusId, category, price, executionType }) => (
         {getCategoryById(category).name}
       </Category>
       <Category>
-        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразове' }
+        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
       </Category>
     </div>
     <div className="mr-4 ml-3">

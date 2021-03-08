@@ -135,21 +135,23 @@ export const save = async (req, res) => {
   res.json(req.user);
 };
 
-export const getTasks = async (req, res, next) => {
+export const getWorks = async (req, res, next) => {
   try {
     const User = req.user;
 
-    Tasks.findAndCountAll({
+    UserTasks.findAndCountAll({
       include: [
         {
-          model: UserTasks,
-          where: { userId: User.id },
+          model: Tasks,
         },
       ],
+      where: {
+        userId: User.id,
+      },
     }).then((result) => {
       res.json({
         count: result.count,
-        tasks: result.rows,
+        works: result.rows,
       });
     });
   } catch (e) {
@@ -182,7 +184,7 @@ export const makeTask = async (req, res, next) => {
       taskId,
       userId,
       status: IN_WORK_STATUS_ID,
-    });
+    }).then(result => res.json(result.id));
 
     return res.json(true);
   } catch (e) {
@@ -276,16 +278,16 @@ export const editReport = async (req, res, next) => {
 
 export const checkUserTask = async (req, res, next) => {
   const User = req.user;
-
+  const { userTaskId } = req.body;
   try {
     const UserTask = await UserTasks.findOne({
+      include: [{
+        model: Tasks,
+      }],
       where: {
-        taskId: req.body.taskId,
+        id: userTaskId,
         userId: User.id,
       },
-      order: [
-        ['id', 'DESC'],
-      ],
     });
 
     return res.json(UserTask);
@@ -296,19 +298,17 @@ export const checkUserTask = async (req, res, next) => {
 
 export const cancelTask = async (req, res, next) => {
   const User = req.user;
-
+  const { userTaskId } = req.body;
   try {
     const UserTask = await UserTasks.findOne({
       where: {
-        taskId: req.body.taskId,
+        id: userTaskId,
         userId: User.id,
       },
     });
 
     if (UserTask) {
       await UserTask.destroy();
-
-      return res.json(true);
     }
 
     return res.json(true);

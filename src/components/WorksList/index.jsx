@@ -10,8 +10,7 @@ class WorksList extends Component {
 
     this.state = {
       loading: true,
-      tasks: [],
-      // count: 0,
+      works: [],
     };
   }
 
@@ -29,7 +28,7 @@ class WorksList extends Component {
 
   load = async () => {
     const { authToken } = this.props;
-    return fetch('/api/user/tasks', {
+    return fetch('/api/user/works', {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -40,14 +39,14 @@ class WorksList extends Component {
         const responseData = await response.json();
 
         this.setState({
-          tasks: responseData.tasks,
+          works: responseData.works,
           // count: responseData.count,
         });
       });
   };
 
   render() {
-    const { loading, tasks } = this.state;
+    const { loading, works } = this.state;
     const { authToken } = this.props;
 
     if (!authToken) {
@@ -71,15 +70,15 @@ class WorksList extends Component {
               {loading && (
                 <Preloader />
               )}
-              {!loading && tasks.map(task => (
+              {!loading && works.map(work => (
                 <TaskCard
-                  to={`/task/${task.id}`}
-                  title={task.title}
-                  statusId={task.userTasks[0].status}
-                  description={task.description}
-                  category={task.category}
-                  price={task.price}
-                  executionType={task.executionType}
+                  to={`/task-execution/${work.id}`}
+                  title={work.task.title}
+                  statusId={work.status}
+                  description={work.task.description}
+                  category={work.task.category}
+                  price={work.task.price}
+                  executionType={work.task.executionType}
                 />
               ))}
             </Col>

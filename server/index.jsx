@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import React from 'react';
 import express from 'express';
 import compression from 'compression';
+import moment from 'moment-timezone';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
@@ -17,6 +18,8 @@ import reducers from '../src/reducers';
 const formData = require('express-form-data');
 
 process.env.TZ = 'Europe/Moscow';
+
+moment.tz.setDefault('Europe/Moscow');
 
 // Database
 const db = require('./config/database');

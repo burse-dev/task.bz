@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import {
   getOwnData,
-  getTasks,
+  getWorks,
   makeTask,
   checkUserTask,
   cancelTask,
@@ -24,7 +24,7 @@ router.param('id', (req, res, next, id) => {
 
 router.get('/user/data', passport.authenticate('jwt', { session: false }), getOwnData);
 
-router.get('/user/tasks', passport.authenticate('jwt', { session: false }), getTasks);
+router.get('/user/works', passport.authenticate('jwt', { session: false }), getWorks);
 
 router.get('/user/getTickets', passport.authenticate('jwt', { session: false }), getTickets);
 

@@ -6,6 +6,7 @@ import Login from './Login';
 import Registration from './Login/Registration';
 import Recovery from './Login/Recovery';
 import Task from './Task';
+import TaskExecution from './Task/TaskExecution';
 import User from './User';
 import PageNotFount from './PageNotFount';
 import EditTask from './EditTask';
@@ -52,6 +53,8 @@ export default () => (
       <Route exact path="/help" component={Help} />
 
       <PrivateRoute exact path="/task/:id" component={Task} />
+
+      <PrivateRoute exact path="/task-execution/:id" component={TaskExecution} />
 
       {/* <Route exact path="/admin/tasks/:id" component={CreateTask} /> */}
 
