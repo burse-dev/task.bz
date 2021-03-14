@@ -111,6 +111,9 @@ class Task extends Component {
               <div className="pt-3">
                 {userTasksAvailability.reason && (() => {
                   let reason = '';
+                  if (userTasksAvailability.reason === 'no_task') {
+                    reason = 'Задача больше не доступна';
+                  }
                   if (userTasksAvailability.reason === 'one_time') {
                     reason = 'Задача доступна для выполнения 1 раз';
                   }

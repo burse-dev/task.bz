@@ -1,20 +1,19 @@
 import express from 'express';
-import moment from 'moment';
 import sequelize, { Op } from 'sequelize';
 import passport from 'passport';
 import Tasks from '../../models/tasks';
 import UserTasks from '../../models/userTasks';
-import { save, update, remove } from '../controllers/tasks';
+import { save, update, remove, checkTaskAvailability } from '../controllers/tasks';
 import {
   IN_WORK_TASK_STATUS_ID,
   FINISHED_TASK_STATUS_ID,
 } from '../../../src/constant/taskStatus';
-import { ONE_TIME_TYPE_ID, REPEATED_TYPE_ID } from '../../../src/constant/taskExecutionType';
 import {
-  AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID,
-  EXECUTION_INTERVALS_VALUES_IN_HOURS,
-} from '../../../src/constant/taskExecutionIntervalType';
-import { SUCCESS_STATUS_ID } from '../../../src/constant/taskExecutionStatus';
+  IN_WORK_STATUS_ID,
+  PENDING_STATUS_ID,
+  REWORK_STATUS_ID,
+  SUCCESS_STATUS_ID,
+} from '../../../src/constant/taskExecutionStatus';
 
 const router = express.Router();
 
@@ -51,16 +50,35 @@ router.get('/feedTasks', async (req, res, next) => {
         'price',
         'description',
         'executionType',
+        sequelize.fn('COUNT', sequelize.col('userTasks.taskId')),
       ],
+      include: [{
+        model: UserTasks,
+        attributes: [],
+        where: {
+          status: [IN_WORK_STATUS_ID, PENDING_STATUS_ID, REWORK_STATUS_ID, SUCCESS_STATUS_ID],
+        },
+      }],
+      group: '"task.id"',
+      having:
+        sequelize.or(
+          sequelize.where(
+            sequelize.fn('COUNT', sequelize.col('userTasks.taskId')), '<', sequelize.col('task.limitTotal'),
+          ),
+          sequelize.where(
+            sequelize.col('task.limitTotal'), Op.eq, null,
+          ),
+        ),
       order: [
         ['createdAt', 'DESC'],
       ],
-    }).then((result) => {
-      res.json({
-        count: result.count,
-        tasks: result.rows,
+    })
+      .then((result) => {
+        res.json({
+          count: result.count,
+          tasks: result.rows,
+        });
       });
-    });
   } catch (e) {
     next(e);
   }
@@ -68,7 +86,11 @@ router.get('/feedTasks', async (req, res, next) => {
 
 router.get('/tasks', async (req, res, next) => {
   try {
+    const statusId = req.query.status;
     Tasks.findAndCountAll({
+      where: {
+        ...(statusId && { status: statusId }),
+      },
       attributes: [
         'id',
         'title',
@@ -87,12 +109,13 @@ router.get('/tasks', async (req, res, next) => {
       order: [
         ['createdAt', 'DESC'],
       ],
-    }).then((result) => {
-      res.json({
-        count: result.count,
-        tasks: result.rows,
+    })
+      .then((result) => {
+        res.json({
+          count: result.count,
+          tasks: result.rows,
+        });
       });
-    });
   } catch (e) {
     next(e);
   }
@@ -104,9 +127,10 @@ router.get('/tasks/:id', async (req, res, next) => {
       where: {
         id: req.id,
       },
-    }).then((result) => {
-      res.json(result);
-    });
+    })
+      .then((result) => {
+        res.json(result);
+      });
   } catch (e) {
     next(e);
   }
@@ -181,80 +205,9 @@ router.post('/task/checkTaskAvailability', passport.authenticate('jwt', { sessio
   const User = req.user;
   const { taskId } = req.body;
 
-  const Task = await Tasks.findOne({
-    where: {
-      id: taskId,
-    },
-  });
+  const result = await checkTaskAvailability(taskId, User.id);
 
-  if (!Task || Task.status !== IN_WORK_TASK_STATUS_ID) {
-    return res.json({
-      availability: false,
-      reason: 'no_task',
-    });
-  }
-
-  const UserTask = await UserTasks.findOne({
-    where: {
-      taskId,
-      userId: User.id,
-    },
-    order: [
-      ['id', 'DESC'],
-    ],
-  });
-
-  // если отклика еще не было
-  if (!UserTask) {
-    return res.json({
-      availability: true,
-    });
-  }
-
-  // если отклик на задачу уже был и задача одноразовая
-  if (UserTask && Task.executionType === ONE_TIME_TYPE_ID) {
-    return res.json({
-      availability: false,
-      reason: 'one_time',
-    });
-  }
-
-  if (Task.executionType === REPEATED_TYPE_ID) {
-    // если многоразовое выполнение + предыдущее задание принято
-    if (
-      Task.executionInterval === AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
-      && UserTask.status === SUCCESS_STATUS_ID
-    ) {
-      return res.json({
-        availability: true,
-      });
-    }
-
-    if (UserTask.readyDate) {
-      // если многоразовое выполнение + отчет отправлен + прошел интервал полсе пред. отчета
-      const hours = EXECUTION_INTERVALS_VALUES_IN_HOURS[Task.executionInterval];
-      const dateInterval = moment(UserTask.readyDate).add(hours, 'hours').toDate();
-
-      if (
-        Task.executionInterval > AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
-        && (new Date() > dateInterval)
-      ) {
-        return res.json({
-          availability: true,
-        });
-      }
-    }
-
-    return res.json({
-      availability: false,
-      reason: 'interval',
-    });
-  }
-
-  return res.json({
-    availability: false,
-    reason: 'default',
-  });
+  return res.json(result);
 });
 
 export default router;

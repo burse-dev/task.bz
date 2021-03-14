@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Col, Row, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import ReportCard from './ReportCard';
+import ReportGroup from './ReportGroup';
 import Preloader from '../../generic/Preloader';
 import checkIcon from '../../img/checkedIcon.svg';
 import closeIcon from '../../img/closeIcon.svg';
@@ -12,6 +12,23 @@ const Button = styled(SmallButton)`
   margin: 0 2px;
 `;
 
+const sortReports = (reports) => {
+  const result = [];
+  reports.forEach((report) => {
+    const groupIndex = result.findIndex(group => group.userId === report.userId);
+    if (groupIndex === -1) {
+      result.push({
+        userId: report.userId,
+        reports: [report],
+      });
+    } else {
+      result[groupIndex].reports.push(report);
+    }
+  });
+
+  return result;
+};
+
 class CheckReports extends Component {
   constructor() {
     super();
@@ -19,7 +36,7 @@ class CheckReports extends Component {
     this.state = {
       title: '',
       loading: true,
-      reports: [],
+      reportGroups: [],
       // count: 0,
       areAllChecked: false,
       checkedIds: [],
@@ -52,10 +69,10 @@ class CheckReports extends Component {
         const responseData = await response.json();
 
         if (responseData.reports[0]) {
+          const reportGroups = sortReports(responseData.reports);
           this.setState({
             title: responseData.reports[0].task.title,
-            reports: responseData.reports,
-            // count: responseData.count,
+            reportGroups,
           });
         }
       });
@@ -184,7 +201,7 @@ class CheckReports extends Component {
   };
 
   render() {
-    const { loading, reports, title, areAllChecked } = this.state;
+    const { loading, title, areAllChecked, reportGroups } = this.state;
     const { authToken } = this.props;
 
     if (loading || !authToken) {
@@ -199,7 +216,7 @@ class CheckReports extends Component {
       <>
         {!loading && (
           <>
-            {!reports.length && (
+            {!reportGroups.length && (
               <div>
                 <Container className="vh-80">
                   <div className="pt-3 pt-lg-5 pb-lg-3">
@@ -208,7 +225,7 @@ class CheckReports extends Component {
                 </Container>
               </div>
             )}
-            {!!reports.length && (
+            {!!reportGroups.length && (
               <>
                 <Container>
                   <div className="pt-3 pt-lg-5 pb-lg-3">
@@ -235,20 +252,14 @@ class CheckReports extends Component {
                 <Container className="pt-3 vh-80">
                   <Row>
                     <Col>
-                      {reports.map(report => (
-                        <ReportCard
-                          key={report.id}
-                          handleClickApprove={this.handleClickApprove(report.id)}
-                          handleClickDecline={this.handleClickDecline(report.id)}
-                          handleClickRework={this.handleClickRework(report.id)}
-                          handleClickCheckbox={this.handleClickCheckbox(report.id)}
-                          isChecked={this.isChecked(report.id)}
-                          createdAt={report.createdAt}
-                          screenshot={report.screenshot}
-                          report={report.report}
-                          reply={report.reply}
-                          userName={report.user.login}
-                          statusId={report.status}
+                      {reportGroups.map(group => (
+                        <ReportGroup
+                          group={group}
+                          handleClickApprove={this.handleClickApprove}
+                          handleClickDecline={this.handleClickDecline}
+                          handleClickRework={this.handleClickRework}
+                          handleClickCheckbox={this.handleClickCheckbox}
+                          isChecked={this.isChecked}
                         />
                       ))}
                     </Col>

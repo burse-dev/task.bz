@@ -1,5 +1,18 @@
+import { Op } from 'sequelize';
+import moment from 'moment';
 import Tasks from '../../models/tasks';
-import { REMOVED_TASK_STATUS_ID } from '../../../src/constant/taskStatus';
+import { IN_WORK_TASK_STATUS_ID, REMOVED_TASK_STATUS_ID } from '../../../src/constant/taskStatus';
+import UserTasks from '../../models/userTasks';
+import {
+  IN_WORK_STATUS_ID,
+  PENDING_STATUS_ID,
+  REWORK_STATUS_ID, SUCCESS_STATUS_ID,
+} from '../../../src/constant/taskExecutionStatus';
+import { ONE_TIME_TYPE_ID, REPEATED_TYPE_ID } from '../../../src/constant/taskExecutionType';
+import {
+  AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID,
+  EXECUTION_INTERVALS_VALUES_IN_HOURS,
+} from '../../../src/constant/taskExecutionIntervalType';
 
 export const save = async (req, res) => {
   const {
@@ -110,4 +123,117 @@ export const remove = async (req, res) => {
   }
 
   return res.json(false);
+};
+
+export const checkTaskAvailability = async (taskId, userId) => {
+  const Task = await Tasks.findOne({
+    where: {
+      [Op.and]: {
+        id: taskId,
+        startTime: {
+          [Op.or]: {
+            [Op.lte]: new Date(),
+            [Op.eq]: null,
+          },
+        },
+        endTime: {
+          [Op.or]: {
+            [Op.gte]: new Date(),
+            [Op.eq]: null,
+          },
+        },
+        status: IN_WORK_TASK_STATUS_ID,
+      },
+    },
+    include: [{
+      model: UserTasks,
+      attributes: [
+        'id',
+      ],
+      where: {
+        status: [IN_WORK_STATUS_ID, PENDING_STATUS_ID, REWORK_STATUS_ID, SUCCESS_STATUS_ID],
+      },
+      required: false,
+    }],
+  });
+
+  // задача не найдена (более не доступна)
+  if (!Task) {
+    return {
+      availability: false,
+      reason: 'no_task',
+    };
+  }
+
+  // Достигнут лимит выполнений
+  if (Task.userTasks.length >= Task.limitTotal && !Task.limitTotal) {
+    return {
+      availability: false,
+      reason: 'execution_limit',
+    };
+  }
+
+  const UserTask = await UserTasks.findOne({
+    where: {
+      taskId,
+      userId,
+    },
+    order: [
+      ['id', 'DESC'],
+    ],
+  });
+
+  // если отклика еще не было
+  if (!UserTask) {
+    return {
+      availability: true,
+    };
+  }
+
+  // если отклик на задачу уже был и задача одноразовая
+  if (UserTask && Task.executionType === ONE_TIME_TYPE_ID) {
+    return {
+      availability: false,
+      reason: 'one_time',
+    };
+  }
+
+  if (Task.executionType === REPEATED_TYPE_ID) {
+    // если многоразовое выполнение + предыдущее задание принято
+    if (
+      Task.executionInterval === AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
+      && UserTask.status === SUCCESS_STATUS_ID
+    ) {
+      return {
+        availability: true,
+      };
+    }
+
+    if (UserTask.readyDate) {
+      // если многоразовое выполнение + отчет отправлен + прошел интервал полсе пред. отчета
+      const hours = EXECUTION_INTERVALS_VALUES_IN_HOURS[Task.executionInterval];
+      const dateInterval = moment(UserTask.readyDate)
+        .add(hours, 'hours')
+        .toDate();
+
+      if (
+        Task.executionInterval > AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
+        && (new Date() > dateInterval)
+      ) {
+        return {
+          availability: true,
+        };
+      }
+    }
+
+    return {
+      availability: false,
+      reason: 'interval',
+    };
+  }
+
+  return {
+    availability: false,
+    reason: 'default',
+  };
 };

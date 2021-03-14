@@ -12,7 +12,7 @@ import Tickets from '../../models/tickets';
 import { PENDING_TICKET_STATUS_ID } from '../../../src/constant/ticketStatus';
 import Transactions from '../../models/transactions';
 import { ADD_TYPE_ID } from '../../../src/constant/transactionType';
-import { REPEATED_TYPE_ID } from '../../../src/constant/taskExecutionType';
+import { checkTaskAvailability } from './tasks';
 
 const JWT = require('jsonwebtoken');
 
@@ -165,18 +165,9 @@ export const makeTask = async (req, res, next) => {
     const userId = User.id;
     const { taskId } = req.body;
 
-    const Task = await Tasks.findOne({
-      where: { id: taskId },
-    });
+    const result = await checkTaskAvailability(taskId, userId);
 
-    const UserTask = await UserTasks.findOne({
-      where: {
-        taskId,
-        userId,
-      },
-    });
-
-    if (UserTask && Task.executionType !== REPEATED_TYPE_ID) {
+    if (!result.availability) {
       return res.json(false);
     }
 
