@@ -58,6 +58,7 @@ router.get('/feedTasks', async (req, res, next) => {
         where: {
           status: [IN_WORK_STATUS_ID, PENDING_STATUS_ID, REWORK_STATUS_ID, SUCCESS_STATUS_ID],
         },
+        required: false,
       }],
       group: '"task.id"',
       having:

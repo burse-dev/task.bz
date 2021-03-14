@@ -166,7 +166,7 @@ export const checkTaskAvailability = async (taskId, userId) => {
   }
 
   // Достигнут лимит выполнений
-  if (Task.userTasks.length >= Task.limitTotal && !Task.limitTotal) {
+  if (Task.userTasks.length >= Task.limitTotal && Task.limitTotal) {
     return {
       availability: false,
       reason: 'execution_limit',
