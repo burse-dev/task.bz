@@ -13,6 +13,7 @@ import { PENDING_TICKET_STATUS_ID } from '../../../src/constant/ticketStatus';
 import Transactions from '../../models/transactions';
 import { ADD_TYPE_ID } from '../../../src/constant/transactionType';
 import { checkTaskAvailability } from './tasks';
+import { MIN_WITHDRAWAL } from '../../../src/constant/generic';
 
 const JWT = require('jsonwebtoken');
 
@@ -100,8 +101,11 @@ export const getAccruals = async (req, res) => {
 
 export const addTicket = async (req, res) => {
   const User = req.user;
-
   const { paymentsMethod, sum } = req.body;
+
+  if (sum < MIN_WITHDRAWAL) {
+    res.json(false);
+  }
 
   await Tickets.create({
     requisiteId: paymentsMethod,

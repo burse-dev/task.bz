@@ -9,6 +9,7 @@ import FormControlSelect from '../generic/Form/FormControlSelectRedux';
 import requisitesType from '../../constant/requisitesType';
 import getTypeNameById from '../functions/getTypeNameById';
 import TicketStatusBadge from '../generic/TicketStatusBadge';
+import { MIN_WITHDRAWAL } from '../../constant/generic';
 
 const getRequisitesOptions = (requisites) => {
   const requisitesOptions = requisites.map(item => ({
@@ -30,12 +31,16 @@ const validate = (values, props) => {
     errors.paymentsMethod = true;
   }
 
-  if (!values.sum || values.sum <= 0) {
+  if (!/^\d+$/.test(values.sum)) {
     errors.sum = 'Некорректная сумма';
   }
 
   if (values.sum > props.balance) {
     errors.sum = 'Сумма должна быть меньше или равна доступной';
+  }
+
+  if (values.sum < MIN_WITHDRAWAL) {
+    errors.sum = 'Минимальная сумма для вывода - 30 руб.';
   }
 
   return errors;
