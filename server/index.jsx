@@ -49,6 +49,7 @@ app.use('/api', require('./api/login/authentication').default);
 app.use('/api', require('./api/login/registration').default);
 app.use('/api', require('./api/login/recovery').default);
 app.use('/api', require('./api/user').default);
+app.use('/api', require('./api/users').default);
 app.use('/api', require('./api/tasks').default);
 app.use('/api', require('./api/tickets').default);
 app.use('/api', require('./api/admins').default);

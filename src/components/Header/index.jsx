@@ -114,6 +114,9 @@ class Header extends Component {
                         </span>
                       )}
                     >
+                      <LinkContainer to="/users">
+                        <NavDropdown.Item>Пользователи</NavDropdown.Item>
+                      </LinkContainer>
                       <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
                     </NavDropdown>
                   </Nav>

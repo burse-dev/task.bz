@@ -32,7 +32,7 @@ class TasksList extends Component {
     this.state = {
       loading: true,
       tasks: [],
-      status: null,
+      status: IN_WORK_TASK_STATUS_ID,
       // count: 0,
     };
   }
@@ -112,7 +112,7 @@ class TasksList extends Component {
             <Filter>
               <Form.Control onChange={this.setFilter} as="select" custom>
                 <option value={0}>Все задания</option>
-                <option value={IN_WORK_TASK_STATUS_ID}>В работе</option>
+                <option selected="selected" value={IN_WORK_TASK_STATUS_ID}>В работе</option>
                 <option value={SUSPENDED_TASK_STATUS_ID}>Приостановлено</option>
                 <option value={FINISHED_TASK_STATUS_ID}>Завершено</option>
                 <option value={REMOVED_TASK_STATUS_ID}>Удалено</option>
