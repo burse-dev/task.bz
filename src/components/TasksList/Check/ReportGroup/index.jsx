@@ -35,6 +35,7 @@ export default ({
           isChecked={isChecked(report.id)}
           createdAt={report.createdAt}
           screenshot={report.screenshot}
+          files={report.files}
           report={report.report}
           reply={report.reply}
           userName={report.user.login}

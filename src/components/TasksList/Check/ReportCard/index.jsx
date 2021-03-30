@@ -29,6 +29,7 @@ const Wrapper = styled.div`
 
 const Img = styled.img`
   width: 100px;
+  margin: 4px;
 `;
 
 const Content = styled.div`
@@ -80,7 +81,8 @@ export default ({
   report,
   reply,
   statusId,
-  screenshot,
+  // screenshot,
+  files,
   isChecked,
   createdAt,
   handleClickCheckbox,
@@ -129,8 +131,13 @@ export default ({
             </>
           )}
         </div>
-        <div className="mr-4 ml-4 d-flex">
-          <Img src={screenshot} />
+        <div className="mr-4 ml-4 d-flex align-items-center">
+          {files.map(file => (
+            // eslint-disable-next-line react/jsx-no-target-blank
+            <a target="_blank" href={file.url}>
+              <Img src={file.url} />
+            </a>
+          ))}
         </div>
         <div className="mr-2 ml-2 d-flex">
           <Button

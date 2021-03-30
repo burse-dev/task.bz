@@ -1,6 +1,7 @@
 import Tasks from '../../models/tasks';
 import UserTasks from '../../models/userTasks';
 import Users from '../../models/users';
+import Files from '../../models/files';
 import Transactions from '../../models/transactions';
 import {
   REJECTED_STATUS_ID,
@@ -23,6 +24,10 @@ export const getReports = async (req, res, next) => {
         {
           model: Tasks,
           attributes: ['title'],
+        },
+        {
+          model: Files,
+          attributes: ['url'],
         },
         {
           model: Users,
