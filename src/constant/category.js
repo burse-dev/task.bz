@@ -11,7 +11,7 @@ export default [
   },
   {
     id: COMMENTS_CATEGORY_ID,
-    name: 'Комментирование',
+    name: 'Комментарии/Отзывы',
   },
   {
     id: REPOST_CATEGORY_ID,
