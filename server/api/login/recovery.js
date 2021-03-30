@@ -1,7 +1,7 @@
 import express from 'express';
 import Users from '../../models/users';
 import mailer from '../../services/mailer';
-import registration from '../../templates/registration';
+import recoveryPassword from '../../templates/recoveryPassword';
 import isEmailValid from '../../functions/isEmailValid';
 import generateHash from '../../functions/generateHash';
 
@@ -36,7 +36,7 @@ router.post('/recovery', async (req, res, next) => {
 
       mailer(
         'Восстановление пароля | task.bz',
-        registration.replace('{{name}}', User.login).replace('{{login}}', email).replace('{{pass}}', newPass),
+        recoveryPassword.replace('{{name}}', User.login).replace('{{login}}', email).replace('{{pass}}', newPass),
         null,
         email,
       );

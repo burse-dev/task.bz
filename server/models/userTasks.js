@@ -1,8 +1,9 @@
 import Sequelize from 'sequelize';
+import Files from './files';
 
 const db = require('../config/database');
 
-export default db.define('userTask', {
+const UserTasks = db.define('userTask', {
   report: Sequelize.TEXT,
   reply: Sequelize.TEXT,
   screenshot: Sequelize.TEXT,
@@ -10,3 +11,7 @@ export default db.define('userTask', {
   readyDate: Sequelize.DATE,
   wasPaid: Sequelize.BOOLEAN,
 });
+
+UserTasks.hasMany(Files);
+
+export default UserTasks;

@@ -7,6 +7,7 @@ import Price from '../../generic/Price';
 import Pre from '../../generic/Pre';
 import categories from '../../../constant/category';
 import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
+import Tooltip from '../../generic/Tooltip';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -24,6 +25,11 @@ const Title = styled.div`
   }
 `;
 
+const RejectionRate = styled.div`
+  font-size: 12px;
+  color: #888;
+`;
+
 const Description = styled.div`
   font-size: 14px;
   white-space: pre-wrap;
@@ -36,8 +42,22 @@ const Category = styled.div`
 
 const getCategoryById = id => categories.find(category => category.id === id);
 
-export default ({ title, id, description, category, price, executionType }) => {
+export default ({
+  title,
+  id,
+  description,
+  category,
+  price,
+  executionType,
+  doneCount,
+  rejectedCount,
+}) => {
   const [open, setOpen] = useState(false);
+
+  const rate = parseInt(doneCount, 10)
+    ? (+doneCount / (+doneCount + +rejectedCount)) * 100
+    : 100;
+
   return (
     <Wrapper
       className="mt-1 rounded"
@@ -51,6 +71,7 @@ export default ({ title, id, description, category, price, executionType }) => {
         <div className="pr-2">
           {title}
         </div>
+
         <Price price={price} />
       </Title>
       <Category>
@@ -58,9 +79,23 @@ export default ({ title, id, description, category, price, executionType }) => {
         {' '}
         {getCategoryById(category).name}
       </Category>
-      <Category>
-        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
-      </Category>
+
+      <div className="d-flex">
+        <Category>
+          {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
+          ,
+        </Category>
+
+        <RejectionRate className="pl-2">
+          <Tooltip
+            content="Процент принятых заданий"
+          >
+            {rate}
+            %
+          </Tooltip>
+        </RejectionRate>
+      </div>
+
       <Collapse in={open}>
         <Description id="example-collapse-text">
           <div className="p-2 p-lg-3">

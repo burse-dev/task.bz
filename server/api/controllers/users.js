@@ -4,6 +4,7 @@ import path from 'path';
 import Sequelize from 'sequelize';
 import Users from '../../models/users';
 import Tasks from '../../models/tasks';
+import Files from '../../models/files';
 import Requisites from '../../models/requisites';
 import UserTasks from '../../models/userTasks';
 import generateHash from '../../functions/generateHash';
@@ -199,7 +200,8 @@ const saveFile = async (originalFilename, tmpPath, userTaskId, userId, taskId) =
 
   const DateTimeStr = moment(new Date()).format('HH_mm_DD_MM_YYYY');
 
-  const fileName = `ut${userTaskId}_u${userId}_t${taskId}_${DateTimeStr}${ext}`;
+  const rand = Math.floor(Math.random() * 10000);
+  const fileName = `ut${userTaskId}_u${userId}_t${taskId}_${DateTimeStr}_${rand}${ext}`;
 
   const filePath = path.join(dirPath, fileName);
 
@@ -214,6 +216,13 @@ const saveFile = async (originalFilename, tmpPath, userTaskId, userId, taskId) =
   }));
 };
 
+const deleteFile = async (filePath) => {
+  const absFilePath = path.join(__dirname, '../../', filePath);
+  if (fs.existsSync(absFilePath)) {
+    fs.unlinkSync(absFilePath);
+  }
+};
+
 export const sendReport = async (req, res, next) => {
   try {
     const UserTask = await UserTasks.findOne({
@@ -226,20 +235,44 @@ export const sendReport = async (req, res, next) => {
       return res.json(false);
     }
 
-    const file = req.files.screenshot;
+    if (req.files && req.files.screenshots) {
+      const oldFiles = await Files.findAll({
+        where: {
+          userTaskId: UserTask.id,
+        },
+      });
 
-    const screenshot = file ? await saveFile(
-      file.originalFilename,
-      file.path,
-      UserTask.id,
-      UserTask.userId,
-      UserTask.taskId,
-    ) : null;
+      if (oldFiles) {
+        oldFiles.map(oldFile => deleteFile(oldFile.path));
+      }
+
+      Files.destroy({
+        where: {
+          userTaskId: UserTask.id,
+        },
+      });
+
+      const tmpArr = req.files.screenshots.length
+        ? req.files.screenshots : [req.files.screenshots];
+
+      tmpArr.reduce((prevPromise, file) => prevPromise
+        .then(() => saveFile(
+          file.originalFilename,
+          file.path,
+          UserTask.id,
+          UserTask.userId,
+          UserTask.taskId,
+        ))
+        .then(fileName => Files.create({
+          userTaskId: UserTask.id,
+          path: fileName,
+          url: `${config.host}${fileName}`,
+        })), Promise.resolve());
+    }
 
     await UserTask.update({
       report: req.body.report,
       status: PENDING_STATUS_ID,
-      ...(screenshot && { screenshot: `${config.host}${screenshot}` }),
       readyDate: Sequelize.fn('NOW'),
     });
 
@@ -278,6 +311,9 @@ export const checkUserTask = async (req, res, next) => {
     const UserTask = await UserTasks.findOne({
       include: [{
         model: Tasks,
+      }, {
+        model: Files,
+        required: false,
       }],
       where: {
         id: userTaskId,

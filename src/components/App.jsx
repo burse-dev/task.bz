@@ -19,6 +19,7 @@ import Offer from './Offer';
 import Help from './Help';
 import Footer from './Footer';
 import Users from './Users';
+import Mailing from './Mailing';
 import Header from './Header';
 
 export default () => (
@@ -58,6 +59,8 @@ export default () => (
       <PrivateRoute exact path="/task-execution/:id" component={TaskExecution} />
 
       <PrivateRoute exact path="/users" component={Users} />
+
+      <PrivateRoute exact path="/mailing" component={Mailing} />
 
       {/* <Route exact path="/admin/tasks/:id" component={CreateTask} /> */}
 

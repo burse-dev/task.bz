@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Preloader from '../generic/Preloader';
 import loadUserData from '../../actions/user';
 
-class User extends Component {
+class Users extends Component {
   constructor() {
     super();
 
@@ -100,7 +100,7 @@ class User extends Component {
                         <td>{user.balance}</td>
                         <td>{user.country}</td>
                         <td>{user.city}</td>
-                        <td>{moment(user.dob).format('DD.MM.YY HH:mm')}</td>
+                        <td>{user.dob && moment(user.dob).format('DD.MM.YY')}</td>
                         <td>{moment(user.createdAt).format('DD.MM.YY HH:mm')}</td>
                       </tr>
                     ))}
@@ -125,4 +125,4 @@ const mapStateToProps = state => ({
   authToken: state.auth.token,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(User);
+export default connect(mapStateToProps, mapDispatchToProps)(Users);

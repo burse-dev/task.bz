@@ -25,9 +25,5 @@ export default async (subject, html, attachments, recipient) => {
     mailOptions.attachments = attachments;
   }
 
-  transporter.sendMail(mailOptions, (error) => {
-    if (error) {
-      console.log(error);
-    }
-  });
+  return transporter.sendMail(mailOptions);
 };

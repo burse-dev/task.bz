@@ -36,10 +36,10 @@ const ReportForm = ({ handleSubmit }) => (
     <Row>
       <Col lg={3}>
         <Form.Group>
-          <Form.Label>Скриншот</Form.Label>
+          <Form.Label>Скриншоты</Form.Label>
           <Field
             id="custom-file"
-            name="screenshot"
+            name="screenshots"
             type="file"
             label="Выберите файл"
             component={FormFileInput}
@@ -66,6 +66,7 @@ class Task extends Component {
       loading: true,
       task: {},
       userTask: {},
+      screenshots: [],
     };
   }
 
@@ -103,6 +104,7 @@ class Task extends Component {
         this.setState({
           userTask: responseData || {},
           task: responseData.task,
+          screenshots: responseData.files ? responseData.files.map(file => file.url) : [],
         });
       });
   };
@@ -131,7 +133,6 @@ class Task extends Component {
 
   handleClickSendReport = (values) => {
     const { authToken } = this.props;
-
     const { userTask } = this.state;
 
     if (!userTask) {
@@ -141,7 +142,12 @@ class Task extends Component {
     const formData = new FormData();
     formData.append('userTaskId', userTask.id);
     formData.append('report', values.report);
-    formData.append('screenshot', values.screenshot);
+
+    if (values.screenshots) {
+      [...values.screenshots].forEach((file) => {
+        formData.append('screenshots', file);
+      });
+    }
 
     fetch('/api/user/sendReport', {
       method: 'POST',
@@ -179,7 +185,7 @@ class Task extends Component {
   };
 
   render() {
-    const { loading, task, userTask } = this.state;
+    const { loading, task, userTask, screenshots } = this.state;
 
     return (
       <>
@@ -205,7 +211,7 @@ class Task extends Component {
                         onSubmit={this.handleClickSendReport}
                         initialValues={{
                           report: userTask.report,
-                          screenshot: userTask.screenshot,
+                          screenshots,
                         }}
                       />
                     )}

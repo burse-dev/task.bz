@@ -117,6 +117,9 @@ class Header extends Component {
                       <LinkContainer to="/users">
                         <NavDropdown.Item>Пользователи</NavDropdown.Item>
                       </LinkContainer>
+                      <LinkContainer to="/mailing">
+                        <NavDropdown.Item>Рассылка</NavDropdown.Item>
+                      </LinkContainer>
                       <NavDropdown.Item onClick={this.handleLogout}>Выйти</NavDropdown.Item>
                     </NavDropdown>
                   </Nav>
