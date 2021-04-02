@@ -18,8 +18,12 @@ import { ADD_TYPE_ID, DIFF_TYPE_ID } from '../../../src/constant/transactionType
 
 export const getReports = async (req, res, next) => {
   try {
+    const statusId = req.query.status;
     UserTasks.findAndCountAll({
-      where: { taskId: req.reportId },
+      where: {
+        taskId: req.reportId,
+        ...(statusId && { status: statusId }),
+      },
       include: [
         {
           model: Tasks,

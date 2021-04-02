@@ -25,11 +25,6 @@ const Title = styled.div`
   }
 `;
 
-const RejectionRate = styled.div`
-  font-size: 12px;
-  color: #888;
-`;
-
 const Description = styled.div`
   font-size: 14px;
   white-space: pre-wrap;
@@ -39,6 +34,10 @@ const Category = styled.div`
   font-size: 12px;
   color: #888;
 `;
+
+const RejectionRate = styled(Category)``;
+
+const DoneCount = styled(Category)``;
 
 const getCategoryById = id => categories.find(category => category.id === id);
 
@@ -92,8 +91,17 @@ export default ({
           >
             {rate}
             %
+            ,
           </Tooltip>
         </RejectionRate>
+
+        <DoneCount className="pl-2">
+          <Tooltip
+            content="Всего сделано заданий"
+          >
+            {doneCount}
+          </Tooltip>
+        </DoneCount>
       </div>
 
       <Collapse in={open}>

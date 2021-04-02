@@ -37,6 +37,11 @@ const Content = styled.div`
   align-items: center;
 `;
 
+const Report = styled.div`
+  overflow: hidden;
+  margin-right: auto;
+`;
+
 const UserName = styled.div`
   min-width: 150px;
 `;
@@ -120,7 +125,7 @@ export default ({
             </CreatedAt>
           </div>
         </UserName>
-        <div className="mr-auto">
+        <Report className="mr-auto">
           <div>{report}</div>
           {reply && (
             <>
@@ -130,7 +135,7 @@ export default ({
               </div>
             </>
           )}
-        </div>
+        </Report>
         <div className="mr-4 ml-4 d-flex align-items-center">
           {files.map(file => (
             // eslint-disable-next-line react/jsx-no-target-blank

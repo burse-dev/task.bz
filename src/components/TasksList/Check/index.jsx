@@ -7,6 +7,19 @@ import Preloader from '../../generic/Preloader';
 import checkIcon from '../../img/checkedIcon.svg';
 import closeIcon from '../../img/closeIcon.svg';
 import SmallButton from '../../generic/Buttons/SmallButton';
+import {
+  IN_WORK_STATUS_ID,
+  PENDING_STATUS_ID,
+  OVERDUE_STATUS_ID,
+  REJECTED_STATUS_ID,
+  REWORK_STATUS_ID,
+  SUCCESS_STATUS_ID,
+} from '../../../constant/taskExecutionStatus';
+
+const Filter = styled.div`
+  margin-bottom: 20px;
+  width: 150px;
+`;
 
 const Button = styled(SmallButton)`
   margin: 0 2px;
@@ -40,6 +53,7 @@ class CheckReports extends Component {
       // count: 0,
       areAllChecked: false,
       checkedIds: [],
+      status: PENDING_STATUS_ID,
     };
   }
 
@@ -58,7 +72,12 @@ class CheckReports extends Component {
   load = async () => {
     const { match: { params: { id } }, authToken } = this.props;
 
-    return fetch(`/api/reports/${id}`, {
+    const { status } = this.state;
+    const query = new URLSearchParams({
+      ...(status && { status }),
+    });
+
+    return fetch(`/api/reports/${id}?${query}`, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -74,8 +93,27 @@ class CheckReports extends Component {
             title: responseData.reports[0].task.title,
             reportGroups,
           });
+        } else {
+          this.setState({
+            reportGroups: [],
+          });
         }
       });
+  };
+
+  setFilter = async (e) => {
+    const status = parseInt(e.target.value, 10);
+
+    await this.setState({
+      loading: true,
+      status: status || null,
+    });
+
+    await this.load();
+
+    this.setState({
+      loading: false,
+    });
   };
 
   isChecked = (id) => {
@@ -216,40 +254,54 @@ class CheckReports extends Component {
       <>
         {!loading && (
           <>
+            <Container>
+              <div className="pt-3 pt-lg-5 pb-lg-3">
+                <h2>
+                  Отчеты на проверку по задаче:
+                  {' '}
+                  {title}
+                </h2>
+              </div>
+
+              <Filter>
+                <Form.Control onChange={this.setFilter} as="select" custom>
+                  <option value={0}>Все отчеты</option>
+                  <option value={IN_WORK_STATUS_ID}>В работе</option>
+                  <option selected="selected" value={PENDING_STATUS_ID}>На проверке</option>
+                  <option value={OVERDUE_STATUS_ID}>Не выполнено</option>
+                  <option value={REJECTED_STATUS_ID}>Отклонено</option>
+                  <option value={REWORK_STATUS_ID}>Требует доработки</option>
+                  <option value={SUCCESS_STATUS_ID}>Принято</option>
+                </Form.Control>
+              </Filter>
+            </Container>
+
             {!reportGroups.length && (
               <div>
                 <Container className="vh-80">
                   <div className="pt-3 pt-lg-5 pb-lg-3">
-                    <h2>Отчетов нет</h2>
+                    <h6>Отчетов нет</h6>
                   </div>
                 </Container>
               </div>
             )}
+
             {!!reportGroups.length && (
               <>
-                <Container>
-                  <div className="pt-3 pt-lg-5 pb-lg-3">
-                    <h2>
-                      Отчеты на проверку по задаче:
-                      {' '}
-                      {title}
-                    </h2>
-                  </div>
-
-                  <div className="d-flex mr-4 ml-4">
-
-                    <div className="mr-1">
-                      <Form.Check onChange={this.handleClickCheckAll} checked={areAllChecked} type="checkbox" />
-                    </div>
-
-                    <div className="d-flex align-items-center justify-content-start">
-                      <Button icon={checkIcon} onClick={this.handleClickApproveAll} />
-                      <Button icon={closeIcon} onClick={this.handleClickDeclineAll} />
-                    </div>
-                  </div>
-                </Container>
-
-                <Container className="pt-3 vh-80">
+                <Container className="vh-80">
+                  <Row>
+                    <Col>
+                      <div className="d-flex mr-4 ml-4 mb-3">
+                        <div className="mr-1">
+                          <Form.Check onChange={this.handleClickCheckAll} checked={areAllChecked} type="checkbox" />
+                        </div>
+                        <div className="d-flex align-items-center justify-content-start">
+                          <Button icon={checkIcon} onClick={this.handleClickApproveAll} />
+                          <Button icon={closeIcon} onClick={this.handleClickDeclineAll} />
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
                   <Row>
                     <Col>
                       {reportGroups.map(group => (
