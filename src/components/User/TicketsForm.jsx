@@ -66,9 +66,7 @@ const TicketsForm = ({ handleSubmit, requisites, balance, tickets }) => (
           component={FormControl}
         />
         <Form.Text className="text-muted">
-          Доступно:
-          {' '}
-          {balance}
+          Минимальная сумма для вывода - 30 руб.
         </Form.Text>
       </Form.Group>
 
