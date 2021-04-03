@@ -26,12 +26,12 @@ router.param('id', (req, res, next, id) => {
 router.get('/feedTasks', async (req, res, next) => {
   try {
     const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType",
-                  COUNT("userTasks"."taskId"),
-                  COUNT("userTasksDone"."taskId") as "doneCount",
-                  COUNT("userTasksRejected"."taskId") as "rejectedCount"
+                  COUNT(DISTINCT "userTasks"."id"),
+                  COUNT(DISTINCT  "userTasksDone"."id") as "doneCount",
+                  COUNT(DISTINCT "userTasksRejected"."id") as "rejectedCount"
                 FROM "tasks"
                 LEFT OUTER JOIN "userTasks" ON "tasks"."id" = "userTasks"."taskId" 
-                    AND "userTasks"."status" IN (${IN_WORK_STATUS_ID}, ${PENDING_STATUS_ID}, ${REWORK_STATUS_ID}, ${SUCCESS_STATUS_ID})
+                    AND "userTasks"."status" IN (${IN_WORK_STATUS_ID}, ${PENDING_STATUS_ID}, ${REWORK_STATUS_ID}, ${REJECTED_STATUS_ID}, ${SUCCESS_STATUS_ID})
                 LEFT JOIN "userTasks" as "userTasksDone" ON "tasks"."id" = "userTasksDone"."taskId" AND "userTasksDone"."status" = ${SUCCESS_STATUS_ID}
                 LEFT JOIN "userTasks" as "userTasksRejected" ON "tasks"."id" = "userTasksRejected"."taskId" AND "userTasksRejected"."status" = ${REJECTED_STATUS_ID}
                 WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL)

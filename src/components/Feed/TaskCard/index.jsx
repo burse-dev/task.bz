@@ -54,8 +54,8 @@ export default ({
   const [open, setOpen] = useState(false);
 
   const rate = parseInt(doneCount, 10)
-    ? (+doneCount / (+doneCount + +rejectedCount)) * 100
-    : 100;
+    ? Math.floor((+doneCount / (+doneCount + +rejectedCount)) * 100)
+    : 0;
 
   return (
     <Wrapper
@@ -82,26 +82,28 @@ export default ({
       <div className="d-flex">
         <Category>
           {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
-          ,
         </Category>
 
-        <RejectionRate className="pl-2">
-          <Tooltip
-            content="Процент принятых заданий"
-          >
-            {rate}
-            %
-            ,
-          </Tooltip>
-        </RejectionRate>
+        {!!rate && (
+          <RejectionRate className="pl-2">
+            <Tooltip
+              content="Процент принятых заданий"
+            >
+              {rate}
+              %
+            </Tooltip>
+          </RejectionRate>
+        )}
 
-        <DoneCount className="pl-2">
-          <Tooltip
-            content="Всего сделано заданий"
-          >
-            {doneCount}
-          </Tooltip>
-        </DoneCount>
+        {!!+doneCount && (
+          <DoneCount className="pl-2">
+            <Tooltip
+              content="Всего сделано заданий"
+            >
+              {doneCount}
+            </Tooltip>
+          </DoneCount>
+        )}
       </div>
 
       <Collapse in={open}>
