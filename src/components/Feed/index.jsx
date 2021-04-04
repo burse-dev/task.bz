@@ -55,15 +55,15 @@ class Feed extends Component {
 
   render() {
     const { loading, tasks } = this.state;
-    const { authToken } = this.props;
-
-    if (!authToken) {
-      return (
-        <Container className="pt-3 pb-5 vh-80">
-          <Preloader className="mt-5" />
-        </Container>
-      );
-    }
+    // const { authToken } = this.props;
+    //
+    // if (!authToken) {
+    //   return (
+    //     <Container className="pt-3 pb-5 vh-80">
+    //       <Preloader className="mt-5" />
+    //     </Container>
+    //   );
+    // }
 
     return (
       <>
