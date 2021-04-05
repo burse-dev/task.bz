@@ -239,7 +239,7 @@ class CheckReports extends Component {
   };
 
   render() {
-    const { loading, title, areAllChecked, reportGroups } = this.state;
+    const { loading, title, areAllChecked, reportGroups, status } = this.state;
     const { authToken } = this.props;
 
     if (loading || !authToken) {
@@ -266,12 +266,24 @@ class CheckReports extends Component {
               <Filter>
                 <Form.Control onChange={this.setFilter} as="select" custom>
                   <option value={0}>Все отчеты</option>
-                  <option value={IN_WORK_STATUS_ID}>В работе</option>
-                  <option selected="selected" value={PENDING_STATUS_ID}>На проверке</option>
-                  <option value={OVERDUE_STATUS_ID}>Не выполнено</option>
-                  <option value={REJECTED_STATUS_ID}>Отклонено</option>
-                  <option value={REWORK_STATUS_ID}>Требует доработки</option>
-                  <option value={SUCCESS_STATUS_ID}>Принято</option>
+                  <option selected={status === IN_WORK_STATUS_ID} value={IN_WORK_STATUS_ID}>
+                    В работе
+                  </option>
+                  <option selected={status === PENDING_STATUS_ID} value={PENDING_STATUS_ID}>
+                    На проверке
+                  </option>
+                  <option selected={status === OVERDUE_STATUS_ID} value={OVERDUE_STATUS_ID}>
+                    Не выполнено
+                  </option>
+                  <option selected={status === REJECTED_STATUS_ID} value={REJECTED_STATUS_ID}>
+                    Отклонено
+                  </option>
+                  <option selected={status === REWORK_STATUS_ID} value={REWORK_STATUS_ID}>
+                    Требует доработки
+                  </option>
+                  <option selected={status === SUCCESS_STATUS_ID} value={SUCCESS_STATUS_ID}>
+                    Принято
+                  </option>
                 </Form.Control>
               </Filter>
             </Container>
