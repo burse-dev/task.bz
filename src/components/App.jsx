@@ -26,8 +26,8 @@ export default () => (
   <>
     <Header />
     <Switch>
-      <Route exact path="/" component={Feed} />
-      <Route exact path="/feed" component={Feed} />
+      <PrivateRoute exact path="/" component={Feed} />
+      <PrivateRoute exact path="/feed" component={Feed} />
 
       <PrivateRoute exact path="/tasks-list" component={TasksList} />
 

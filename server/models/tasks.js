@@ -8,7 +8,7 @@ const Tasks = db.define('task', {
   category: Sequelize.INTEGER,
   description: Sequelize.TEXT,
   reportRules: Sequelize.TEXT,
-  price: Sequelize.INTEGER,
+  price: Sequelize.FLOAT,
   executionTimeLimit: Sequelize.INTEGER, // время исполнения
   limitInHour: Sequelize.INTEGER, // лимит исполнений в час
   limitInDay: Sequelize.INTEGER, // лимит исполнений в день

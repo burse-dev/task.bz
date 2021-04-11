@@ -13,6 +13,8 @@ import Alert from 'react-bootstrap/Alert';
 
 import { emailAuth } from '../../actions';
 import FormControl from '../generic/Form/FormControlRedux';
+import Preloader from '../generic/Preloader';
+import TaskCard from '../Feed/TaskCard';
 
 const LoginForm = ({ handleSubmit, onSubmit, error }) => {
   const [showFlash, setShowFlash] = useState(true);
@@ -57,6 +59,39 @@ const LoginFormRedux = reduxForm({
 })(LoginForm);
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      loading: true,
+      tasks: [],
+    };
+  }
+
+  async componentDidMount() {
+    await this.setState({
+      loading: true,
+    });
+
+    await this.load();
+
+    this.setState({
+      loading: false,
+    });
+  }
+
+  load = async () => fetch('/api/feedTasks', {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  })
+    .then(async (response) => {
+      const responseData = await response.json();
+      this.setState({
+        tasks: responseData.tasks,
+      });
+    });
+
   handleSendLogin = async (values) => {
     const { emailAuth } = this.props;
     const auth = emailAuth(values);
@@ -69,6 +104,7 @@ class Login extends Component {
   };
 
   render() {
+    const { loading, tasks } = this.state;
     return (
       <>
         <Container className="vh-80">
@@ -115,6 +151,33 @@ class Login extends Component {
               </Card>
             </Col>
           </Row>
+
+
+          <Row className="pt-2 justify-content-center">
+            <Col lg="11">
+              <h2>Доступные задачи</h2>
+            </Col>
+          </Row>
+          <Row className="pt-3 justify-content-center">
+            <Col lg="11">
+              {loading && (
+                <Preloader className="mt-5" />
+              )}
+              {!loading && tasks.map(task => (
+                <TaskCard
+                  id={task.id}
+                  title={task.title}
+                  description={task.description}
+                  category={task.category}
+                  price={task.price}
+                  executionType={task.executionType}
+                  doneCount={task.doneCount}
+                  rejectedCount={task.rejectedCount}
+                />
+              ))}
+            </Col>
+          </Row>
+
         </Container>
       </>
     );
