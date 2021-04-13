@@ -10,11 +10,11 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
-
 import { emailAuth } from '../../actions';
 import FormControl from '../generic/Form/FormControlRedux';
 import Preloader from '../generic/Preloader';
 import TaskCard from '../Feed/TaskCard';
+import HowItWorks from './HowItWorks';
 
 const LoginForm = ({ handleSubmit, onSubmit, error }) => {
   const [showFlash, setShowFlash] = useState(true);
@@ -152,6 +152,11 @@ class Login extends Component {
             </Col>
           </Row>
 
+          <Row className="pb-5 justify-content-center">
+            <Col lg="11">
+              <HowItWorks />
+            </Col>
+          </Row>
 
           <Row className="pt-2 justify-content-center">
             <Col lg="11">
