@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import coinsIcon from './coinsIcon.svg';
+import rubleIcon from './ruble-icon.svg';
 
 const CoinsIcon = styled.img`
-  width: 20px;
+  width: 16px;
 `;
 
 export default ({ price }) => (
   <div className="d-flex align-items-center">
     {price}
-    <CoinsIcon src={coinsIcon} className="pl-1" />
+    <CoinsIcon src={rubleIcon} className="pl-1" />
   </div>
 );

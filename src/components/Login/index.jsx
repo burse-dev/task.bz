@@ -16,6 +16,7 @@ import Preloader from '../generic/Preloader';
 import TaskCard from '../Feed/TaskCard';
 import HowItWorks from './HowItWorks';
 
+
 const LoginForm = ({ handleSubmit, onSubmit, error }) => {
   const [showFlash, setShowFlash] = useState(true);
 
@@ -126,12 +127,13 @@ class Login extends Component {
                 Вас ждут тысячи заданий (небольших поручений рекламодателей) на любой вкус и цвет, делайте всё, что и раньше, на любимых сайтах и в соц. сетях, но теперь ещё и за деньги!
               </p>
 
-              <div className="text-center text-lg-left pb-5">
+              <div className="d-flex align-items-center text-center text-lg-left pb-5">
                 <LinkContainer to="/login/registration">
                   <Button variant="success" type="submit">
                     Начать зарабатывать
                   </Button>
                 </LinkContainer>
+                <div className="text-success pl-3">+ 10&#8381; сразу при регистрации</div>
               </div>
             </Col>
             <Col lg="5">
