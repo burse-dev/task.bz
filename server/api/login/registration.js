@@ -5,6 +5,8 @@ import registration from '../../templates/registration';
 import isEmailValid from '../../functions/isEmailValid';
 import generateHash from '../../functions/generateHash';
 import { USER_TYPE_ID } from '../../../src/constant/userType';
+import Transactions from '../../models/transactions';
+import { ADD_TYPE_ID } from '../../../src/constant/transactionType';
 
 const router = express.Router();
 
@@ -44,13 +46,22 @@ router.post('/registration', async (req, res, next) => {
 
       const hash = await generateHash(newPass);
 
-      await Users.create({
+      const NewUser = await Users.create({
         type: USER_TYPE_ID,
         login,
         email,
         balance: 10,
         password: hash,
       });
+
+      await Transactions.create({
+        userId: NewUser.id,
+        type: ADD_TYPE_ID,
+        description: 'Приветственный бонус',
+        value: 10,
+      });
+
+      User.recalculatePayments();
 
       res.json({});
     } catch (e) {
