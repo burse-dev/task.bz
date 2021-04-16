@@ -94,7 +94,7 @@ export const getAccruals = async (req, res) => {
       userId: User.id,
       type: ADD_TYPE_ID,
     },
-    attributes: ['createdAt', 'value'],
+    attributes: ['createdAt', 'value', 'description'],
   });
 
   res.json(accruals);

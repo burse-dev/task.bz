@@ -20,7 +20,7 @@ export default ({ accruals }) => (
           {accruals.map(accrual => (
             <tr>
               <td>{moment(accrual.createdAt).format('HH:mm DD.MM.YY')}</td>
-              <td>{accrual.task && accrual.task.title}</td>
+              <td>{(accrual.task && accrual.task.title) || accrual.description}</td>
               <td>{accrual.value}</td>
             </tr>
           ))}
