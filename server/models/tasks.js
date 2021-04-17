@@ -19,6 +19,11 @@ const Tasks = db.define('task', {
   startTime: Sequelize.DATE,
   endTime: Sequelize.DATE,
   owner: Sequelize.INTEGER,
+  inPriority: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 });
 
 Tasks.hasMany(UserTasks);

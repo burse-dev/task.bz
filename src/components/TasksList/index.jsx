@@ -71,6 +71,19 @@ class TasksList extends Component {
       });
   };
 
+  setPriority = id => async (e) => {
+    e.preventDefault();
+    const { authToken } = this.props;
+    return fetch(`/api/tasks/setPriority/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    })
+      .then(() => this.load());
+  };
+
   setFilter = async (e) => {
     const status = parseInt(e.target.value, 10);
 
@@ -164,6 +177,8 @@ class TasksList extends Component {
                     price={task.price}
                     statusId={task.status}
                     executionType={task.executionType}
+                    inPriority={task.inPriority}
+                    setPriority={this.setPriority}
                   />
                 );
               })}

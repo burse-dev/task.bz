@@ -15,6 +15,7 @@ const Wrapper = styled.div`
   border: 1px solid rgba(0,0,0,.125);
   box-shadow: 0 0 4px 0 rgba(1,1,1,0.1);
   cursor: pointer;
+  ${({ inPriority }) => inPriority && 'background: #fbf8e3;'} 
 `;
 
 const Title = styled.div`
@@ -47,6 +48,7 @@ export default ({
   description,
   category,
   price,
+  inPriority,
   executionType,
   doneCount,
   rejectedCount,
@@ -59,6 +61,7 @@ export default ({
 
   return (
     <Wrapper
+      inPriority={inPriority}
       className="mt-1 rounded"
       onClick={() => setOpen(!open)}
       aria-controls="example-collapse-text"

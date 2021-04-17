@@ -89,6 +89,7 @@ class Feed extends Component {
                   description={task.description}
                   category={task.category}
                   price={task.price}
+                  inPriority={task.inPriority}
                   executionType={task.executionType}
                   doneCount={task.doneCount}
                   rejectedCount={task.rejectedCount}

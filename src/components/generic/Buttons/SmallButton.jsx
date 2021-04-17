@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Wrapper = styled.button`
+const Button = styled.button`
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -14,6 +14,9 @@ const Wrapper = styled.button`
   background: ${'rgb(238,238,238)'};
   ${({ disabled }) => (disabled && 'opacity: 0.5; cursor: auto;')}
   transition: .2s;
+  :focus {
+    outline: 0;
+  }
   :hover {
     ${({ disabled }) => (!disabled && 'background: #C8C8C8;')}
   }
@@ -27,7 +30,7 @@ const Icon = styled.img`
 `;
 
 export default ({ className, onClick, icon, disabled }) => (
-  <Wrapper className={className} disabled={disabled} onClick={onClick}>
+  <Button className={className} disabled={disabled} onClick={onClick}>
     <Icon src={icon} />
-  </Wrapper>
+  </Button>
 );

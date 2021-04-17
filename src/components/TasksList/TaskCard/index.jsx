@@ -7,9 +7,11 @@ import categories from '../../../constant/category';
 import TaskStatusBadge from '../../generic/TaskStatusBadge';
 import SmallButton from '../../generic/Buttons/SmallButton';
 import editIcon from '../../img/editIcon.svg';
+import crownIcon from '../../img/crownIcon.svg';
+import crownIconActive from '../../img/crownIcon-active.svg';
 import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
-const Wrapper = styled.div`
+const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   width: 100%;
@@ -53,7 +55,8 @@ const InWorkCol = styled(Col)`
 `;
 
 const EditCol = styled.div`
-  width: 15%;
+  display: flex;
+  width: 5%;
   text-align: right;
 `;
 
@@ -83,9 +86,10 @@ export default ({
   pendingCount,
   successCount,
   totalCount,
+  inPriority,
+  setPriority,
 }) => (
-  <Wrapper
-    as={Link}
+  <StyledLink
     to={`/tasks-list/check/${id}`}
     className="mt-1 rounded"
   >
@@ -146,6 +150,10 @@ export default ({
       <Link to={`/tasks-list/edit/${id}`}>
         <SmallButton icon={editIcon} />
       </Link>
+      <SmallButton
+        icon={inPriority ? crownIconActive : crownIcon}
+        onClick={setPriority(id)}
+      />
     </EditCol>
-  </Wrapper>
+  </StyledLink>
 );

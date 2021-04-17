@@ -237,3 +237,17 @@ export const checkTaskAvailability = async (taskId, userId) => {
     reason: 'default',
   };
 };
+
+export const setPriority = async (req, res) => {
+  const Task = await Tasks.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  await Task.update({
+    inPriority: !Task.inPriority,
+  });
+
+  return res.json(true);
+};

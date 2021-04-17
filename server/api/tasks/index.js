@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import passport from 'passport';
 import Tasks from '../../models/tasks';
 import UserTasks from '../../models/userTasks';
-import { save, update, remove, checkTaskAvailability } from '../controllers/tasks';
+import { save, update, remove, checkTaskAvailability, setPriority } from '../controllers/tasks';
 import {
   IN_WORK_TASK_STATUS_ID,
 } from '../../../src/constant/taskStatus';
@@ -25,7 +25,7 @@ router.param('id', (req, res, next, id) => {
 
 router.get('/feedTasks', async (req, res, next) => {
   try {
-    const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType",
+    const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType", "tasks"."inPriority",
                   COUNT(DISTINCT "userTasks"."id"),
                   COUNT(DISTINCT  "userTasksDone"."id") as "doneCount",
                   COUNT(DISTINCT "userTasksRejected"."id") as "rejectedCount"
@@ -38,7 +38,7 @@ router.get('/feedTasks', async (req, res, next) => {
                 AND "tasks"."status" = 1
                 GROUP BY "tasks"."id"
                 HAVING (COUNT("userTasks"."taskId") < "tasks"."limitTotal" OR "tasks"."limitTotal" IS NULL)
-                ORDER BY "tasks"."createdAt" DESC`;
+                ORDER BY "tasks"."inPriority" DESC, "tasks"."createdAt" DESC`;
 
     const tasks = await Tasks.sequelize.query(sqlQuery, {
       model: Tasks,
@@ -67,6 +67,7 @@ router.get('/tasks', async (req, res, next) => {
         'category',
         'status',
         'price',
+        'inPriority',
         'limitTotal',
         'executionType',
       ],
@@ -206,6 +207,8 @@ router.get('/task/updateStatus', async (req, res, next) => {
     next(e);
   }
 });
+
+router.get('/tasks/setPriority/:id', passport.authenticate('jwt', { session: false }), setPriority);
 
 router.post('/task/checkTaskAvailability', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const User = req.user;
