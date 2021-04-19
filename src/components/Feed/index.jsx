@@ -69,7 +69,7 @@ class Feed extends Component {
       <>
         <Container>
           <div className="pt-3 pt-lg-5">
-            <h2>Поиск задач</h2>
+            <h2>Лента задач</h2>
             <FeedDescription>
               {/* eslint-disable-next-line max-len */}
               На этой странице отображаются все доступные вам задания для работы. Чтобы узнать подробности задания, нажмите на заголовок.
