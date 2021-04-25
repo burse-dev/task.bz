@@ -6,9 +6,10 @@ import CardWrapper from './CardWrapper';
 import categories from '../../constant/category';
 import Pre from '../generic/Pre';
 import Price from '../generic/Price';
-import hoursCountEnding from '../functions/hoursCountEnding';
+import minutesCountEnding from '../functions/minutesCountEnding';
 import { REPEATED_TYPE_ID } from '../../constant/taskExecutionType';
 import taskExecutionIntervalType from '../../constant/taskExecutionIntervalType';
+import addLinks from '../functions/addLinksToText';
 
 const Title = styled.h1`
   font-size: 28px;
@@ -40,7 +41,7 @@ export default ({
         <h5 className="pt-2">Задание</h5>
         <p>
           <Pre>
-            {description}
+            <div dangerouslySetInnerHTML={{ __html: addLinks(description) }} />
           </Pre>
         </p>
       </section>
@@ -63,7 +64,7 @@ export default ({
 
       <section>
         <b>Время на выполнение: </b>
-        {executionTimeLimit ? `${executionTimeLimit} ${hoursCountEnding(executionTimeLimit)}` : '-'}
+        {executionTimeLimit ? `${executionTimeLimit} ${minutesCountEnding(executionTimeLimit)}` : '-'}
       </section>
 
       {executionType === REPEATED_TYPE_ID && (

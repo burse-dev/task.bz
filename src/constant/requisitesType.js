@@ -1,7 +1,7 @@
 export const CARD_TYPE_ID = 1;
 export const YANDEX_TYPE_ID = 2;
 export const QIWI_TYPE_ID = 3;
-export const WEBMONEY_TYPE_ID = 4;
+export const WMP_TYPE_ID = 4;
 
 export default [
   {
@@ -17,7 +17,7 @@ export default [
     name: 'Qiwi',
   },
   {
-    id: WEBMONEY_TYPE_ID,
-    name: 'WebMoney',
+    id: WMP_TYPE_ID,
+    name: 'WMP',
   },
 ];

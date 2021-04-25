@@ -11,6 +11,7 @@ import {
   addRequisites,
   addTicket,
   getTickets,
+  cancelTicket,
   getAccruals,
   save,
 } from '../controllers/users';
@@ -43,6 +44,8 @@ router.post('/user/checkUserTask', passport.authenticate('jwt', { session: false
 router.post('/user/addRequisites', passport.authenticate('jwt', { session: false }), addRequisites);
 
 router.post('/user/addTicket', passport.authenticate('jwt', { session: false }), addTicket);
+
+router.post('/user/cancelTicket', passport.authenticate('jwt', { session: false }), cancelTicket);
 
 router.post('/user/save', passport.authenticate('jwt', { session: false }), save);
 

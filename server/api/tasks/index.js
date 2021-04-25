@@ -208,11 +208,11 @@ router.get('/task/updateStatus', async (req, res, next) => {
       },
     );
 
-    const hour = 60 * 60 * 1000;
+    const minute = 60 * 1000;
     const now = new Date();
 
     userTasks.forEach((userTask) => {
-      now.setTime(now.getTime() - hour * userTask.task.executionTimeLimit);
+      now.setTime(now.getTime() - minute * userTask.task.executionTimeLimit);
       if (userTask.createdAt < now) {
         UserTasks.update({
           status: OVERDUE_STATUS_ID,

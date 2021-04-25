@@ -49,7 +49,7 @@ export const validateRestrictionsFields = (values, errors) => {
 export const RestrictionsFields = ({ executionType }) => (
   <>
     <Form.Group>
-      <Form.Label>Время выполнения (часы)</Form.Label>
+      <Form.Label>Время выполнения (минуты)</Form.Label>
       <Field
         name="executionTimeLimit"
         component={FormControl}
@@ -57,7 +57,7 @@ export const RestrictionsFields = ({ executionType }) => (
         min="0"
       />
       <Form.Text className="text-muted">
-        Сколько часов дать исполнителю на выполнение задания
+        Сколько минут дать исполнителю на выполнение задания
       </Form.Text>
     </Form.Group>
 

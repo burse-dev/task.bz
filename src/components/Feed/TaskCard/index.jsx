@@ -32,6 +32,7 @@ const Description = styled.div`
 `;
 
 const Category = styled.div`
+  padding-right: 10px;
   font-size: 12px;
   color: #888;
 `;
@@ -67,46 +68,47 @@ export default ({
       aria-controls="example-collapse-text"
       aria-expanded={open}
     >
-      <Title
-        className="d-flex align-items-center"
-      >
-        <div className="pr-2">
-          {title}
+      <div className="d-md-flex align-items-center justify-content-md-between">
+        <Title className="d-flex align-items-center">
+          <div className="pr-2">
+            {title}
+          </div>
+
+          <Price price={price} />
+        </Title>
+
+        <div className="d-flex">
+          <Category>
+            Категория:
+            {' '}
+            {getCategoryById(category).name}
+          </Category>
+
+          <Category>
+            {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
+          </Category>
+
+          {!!rate && (
+            <RejectionRate>
+              <Tooltip
+                content="Процент принятых заданий"
+              >
+                {rate}
+                %
+              </Tooltip>
+            </RejectionRate>
+          )}
+
+          {!!+doneCount && (
+            <DoneCount>
+              <Tooltip
+                content="Всего сделано заданий"
+              >
+                {doneCount}
+              </Tooltip>
+            </DoneCount>
+          )}
         </div>
-
-        <Price price={price} />
-      </Title>
-      <Category>
-        Категория:
-        {' '}
-        {getCategoryById(category).name}
-      </Category>
-
-      <div className="d-flex">
-        <Category>
-          {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
-        </Category>
-
-        {!!rate && (
-          <RejectionRate className="pl-2">
-            <Tooltip
-              content="Процент принятых заданий"
-            >
-              {rate}
-              %
-            </Tooltip>
-          </RejectionRate>
-        )}
-
-        {!!+doneCount && (
-          <DoneCount className="pl-2">
-            <Tooltip
-              content="Всего сделано заданий"
-            >
-              {doneCount}
-            </Tooltip>
-          </DoneCount>
-        )}
       </div>
 
       <Collapse in={open}>

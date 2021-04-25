@@ -118,6 +118,23 @@ export const addTicket = async (req, res) => {
   res.json(true);
 };
 
+export const cancelTicket = async (req, res) => {
+  const User = req.user;
+
+  const Ticket = await Tickets.findOne({
+    where: {
+      userId: User.id,
+      status: PENDING_TICKET_STATUS_ID,
+    },
+  });
+
+  if (Ticket) {
+    await Ticket.destroy();
+  }
+
+  res.json(true);
+};
+
 export const save = async (req, res) => {
   const User = req.user;
 

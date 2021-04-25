@@ -15,6 +15,8 @@ import {
   SUCCESS_TICKET_STATUS_ID,
 } from '../../../src/constant/ticketStatus';
 import { ADD_TYPE_ID, DIFF_TYPE_ID } from '../../../src/constant/transactionType';
+import mailer from '../../services/mailer';
+import taskApprovedTemplate from '../../templates/taskApproved';
 
 export const getReports = async (req, res, next) => {
   try {
@@ -91,6 +93,13 @@ export const approveReports = async (req, res, next) => {
       });
 
       await User.recalculatePayments();
+
+      mailer(
+        'Задание принято | task.bz',
+        taskApprovedTemplate.replace('{{name}}', User.login).replace('{{reward}}', userTask.task.price).replace('{{balance}}', User.balance),
+        null,
+        User.email,
+      );
 
       return userTask.update({
         status: SUCCESS_STATUS_ID,

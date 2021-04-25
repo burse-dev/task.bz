@@ -8,9 +8,11 @@ import moment from 'moment';
 import Preloader from '../generic/Preloader';
 import ProfileForm from './ProfileForm';
 import TicketsForm from './TicketsForm';
+import CancelTicketForm from './CancelTicketForm';
 import Accruals from './Accruals';
 import RequisitesForm from './RequisitesForm';
 import loadUserData from '../../actions/user';
+import { PENDING_TICKET_STATUS_ID } from '../../constant/ticketStatus';
 
 class User extends Component {
   constructor() {
@@ -164,6 +166,24 @@ class User extends Component {
       });
   };
 
+  handleSubmitCancelTicketForm = async (values) => {
+    const { authToken } = this.props;
+
+    const formData = new FormData();
+    formData.append('paymentsMethod', values.paymentsMethod);
+    formData.append('sum', values.sum);
+
+    return fetch('/api/user/cancelTicket', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    })
+      .then(async () => {
+        await this.loadTickets();
+      });
+  };
+
   handleSubmitTicketsForm = async (values) => {
     const { authToken } = this.props;
 
@@ -188,6 +208,8 @@ class User extends Component {
   render() {
     const { loading, userData, tickets, accruals, activeTabKey } = this.state;
     const { user, authToken } = this.props;
+
+    const PendingTicket = tickets.find(ticket => ticket.status === PENDING_TICKET_STATUS_ID);
 
     if (!authToken) {
       return (
@@ -248,11 +270,15 @@ class User extends Component {
                       />
                     </Tab.Pane>
                     <Tab.Pane eventKey="#payments">
+                      {PendingTicket && (
+                        <CancelTicketForm onSubmit={this.handleSubmitCancelTicketForm} />
+                      )}
                       <TicketsForm
                         onSubmit={this.handleSubmitTicketsForm}
                         balance={user.balance}
                         requisites={user.requisites}
                         tickets={tickets}
+                        pendingTicket={PendingTicket}
                       />
                     </Tab.Pane>
                   </Tab.Content>
