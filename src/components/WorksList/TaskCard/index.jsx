@@ -6,10 +6,7 @@ import TaskExecutionStatusBadge from '../../generic/TaskExecutionStatusBadge';
 import categories from '../../../constant/category';
 import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
+const Wrapper = styled.div` 
   padding: 10px;
   border: 1px solid rgba(0,0,0,.125);
   box-shadow: 0 0 4px 0 rgba(1,1,1,0.1);
@@ -43,17 +40,22 @@ export default ({ to, title, statusId, category, price, executionType }) => (
   <Wrapper
     as={Link}
     to={to}
-    className="mt-1 rounded"
+    className="d-block d-md-flex justify-content-between mt-1 rounded"
   >
-    <div className="w-25">
-      <Title
-        className="d-flex align-items-center"
-      >
-        <div className="pr-2">
-          {title}
-        </div>
+
+    <div className="d-md-flex align-items-center">
+      <Title className="pr-2">
+        {title}
       </Title>
-      <Category>
+
+      <div className="d-flex align-items-center">
+        <Price price={price} className="pr-2" />
+        <TaskExecutionStatusBadge statusId={statusId} />
+      </div>
+    </div>
+
+    <div className="d-flex">
+      <Category className="pr-2">
         Категория:
         {' '}
         {getCategoryById(category).name}
@@ -61,12 +63,6 @@ export default ({ to, title, statusId, category, price, executionType }) => (
       <Category>
         {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
       </Category>
-    </div>
-    <div className="mr-4 ml-3">
-      <Price price={price} />
-    </div>
-    <div className="w-25">
-      <TaskExecutionStatusBadge statusId={statusId} />
     </div>
   </Wrapper>
 );

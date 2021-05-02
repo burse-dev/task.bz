@@ -17,6 +17,7 @@ import {
 import { ADD_TYPE_ID, DIFF_TYPE_ID } from '../../../src/constant/transactionType';
 import mailer from '../../services/mailer';
 import taskApprovedTemplate from '../../templates/taskApproved';
+import ticketApprovedTemplate from '../../templates/ticketApproved';
 
 export const getReports = async (req, res, next) => {
   try {
@@ -212,6 +213,16 @@ export const approveTicket = async (req, res, next) => {
     });
 
     User.recalculatePayments();
+
+    mailer(
+      'Заявка на выплату исполнена | task.bz',
+      ticketApprovedTemplate
+        .replace('{{name}}', User.login)
+        .replace('{{value}}', Ticket.value)
+        .replace('{{balance}}', User.balance),
+      null,
+      User.email,
+    );
 
     return res.json({});
   } catch (e) {
