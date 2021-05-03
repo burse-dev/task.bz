@@ -137,8 +137,7 @@ export default () => {
       method: 'POST',
       body: formData,
     }).then(async (response) => {
-      const responseData = await response.json();
-      console.log(responseData);
+      await response.json();
     }).catch(() => {
       alert('Обишка отправки данных');
       throw new Error();

@@ -102,10 +102,51 @@ export const approveReports = async (req, res, next) => {
         User.email,
       );
 
-      return userTask.update({
+      await userTask.update({
         status: SUCCESS_STATUS_ID,
         wasPaid: true,
       });
+
+      // проверить, выполнил ли он остальные задачи в пачке. Если да, то то выдать награду
+      if (userTask.task.taskPackId) {
+        const tasks = await Tasks.findAndCountAll({
+          where: {
+            taskPackId: userTask.task.taskPackId,
+          },
+          attributes: ['id', 'price'],
+        });
+
+        const taskIds = tasks.rows.map(row => row.id);
+        const sum = tasks.rows.reduce((accum, cur) => accum + cur.price, 0);
+
+        const doneUserTasks = await UserTasks.findAndCountAll({
+          where: {
+            status: SUCCESS_STATUS_ID,
+            taskId: taskIds,
+          },
+          attributes: ['taskId'],
+          distinct: true,
+        });
+
+        if ((doneUserTasks.count === tasks.count) && userTask.wasPaidPackBonus !== true) {
+          await Transactions.create({
+            type: ADD_TYPE_ID,
+            userId: userTask.userId,
+            description: 'Бонус за выполнение пакета задач',
+            value: Math.round(sum * 0.2),
+          });
+
+          await UserTasks.update({
+            wasPaidPackBonus: true,
+          }, {
+            where: {
+              userId: userTask.userId,
+            },
+          });
+        }
+      }
+
+      return Promise.resolve();
     });
 
     await Promise.all(promises);

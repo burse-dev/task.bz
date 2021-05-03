@@ -95,6 +95,9 @@ export const getAccruals = async (req, res) => {
       type: ADD_TYPE_ID,
     },
     attributes: ['createdAt', 'value', 'description'],
+    order: [
+      ['createdAt', 'DESC'],
+    ],
   });
 
   res.json(accruals);

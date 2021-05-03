@@ -10,6 +10,7 @@ const UserTasks = db.define('userTask', {
   status: Sequelize.INTEGER,
   readyDate: Sequelize.DATE,
   wasPaid: Sequelize.BOOLEAN,
+  wasPaidPackBonus: Sequelize.BOOLEAN,
 });
 
 UserTasks.hasMany(Files);

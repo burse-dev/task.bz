@@ -1,8 +1,9 @@
 import { Op } from 'sequelize';
 import moment from 'moment';
-import Tasks from '../../models/tasks';
 import { IN_WORK_TASK_STATUS_ID, REMOVED_TASK_STATUS_ID } from '../../../src/constant/taskStatus';
+import Tasks from '../../models/tasks';
 import UserTasks from '../../models/userTasks';
+import TaskPacks from '../../models/taskPack';
 import {
   IN_WORK_STATUS_ID,
   PENDING_STATUS_ID,
@@ -250,4 +251,43 @@ export const setPriority = async (req, res) => {
   });
 
   return res.json(true);
+};
+
+export const addPack = async (req, res, next) => {
+  try {
+    const idsStr = req.query.ids;
+    const ids = idsStr ? idsStr.split(',') : [];
+
+    const TaskPack = await TaskPacks.create({});
+
+    await Tasks.update({
+      taskPackId: TaskPack.id,
+    }, {
+      where: {
+        id: ids,
+      },
+    });
+
+    res.json(true);
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const deleteFromPack = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    await Tasks.update({
+      taskPackId: null,
+    }, {
+      where: {
+        id,
+      },
+    });
+
+    res.json(true);
+  } catch (e) {
+    next(e);
+  }
 };

@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import passport from 'passport';
 import Tasks from '../../models/tasks';
 import UserTasks from '../../models/userTasks';
-import { save, update, remove, checkTaskAvailability, setPriority } from '../controllers/tasks';
+import { save, update, remove, checkTaskAvailability, setPriority, addPack, deleteFromPack } from '../controllers/tasks';
 import {
   IN_WORK_TASK_STATUS_ID,
 } from '../../../src/constant/taskStatus';
@@ -47,7 +47,7 @@ router.get('/feedTasks', async (req, res, next) => {
       order = '"tasks"."price" DESC';
     }
 
-    const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType", "tasks"."inPriority",
+    const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType", "tasks"."inPriority", "tasks"."taskPackId",
                 COUNT(DISTINCT "userTasks"."id"),
                 COUNT(DISTINCT  "userTasksDone"."id") as "doneCount",
                 COUNT(DISTINCT "userTasksRejected"."id") as "rejectedCount"
@@ -90,6 +90,7 @@ router.get('/tasks', async (req, res, next) => {
         'status',
         'price',
         'inPriority',
+        'taskPackId',
         'limitTotal',
         'executionType',
       ],
@@ -231,6 +232,10 @@ router.get('/task/updateStatus', async (req, res, next) => {
 });
 
 router.get('/tasks/setPriority/:id', passport.authenticate('jwt', { session: false }), setPriority);
+
+router.post('/tasks/addPack', passport.authenticate('jwt', { session: false }), addPack);
+
+router.delete('/tasks/deleteFromPack/:id', passport.authenticate('jwt', { session: false }), deleteFromPack);
 
 router.post('/task/checkTaskAvailability', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const User = req.user;

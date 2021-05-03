@@ -12,10 +12,13 @@ import Tooltip from '../../generic/Tooltip';
 const Wrapper = styled.div`
   width: 100%;
   padding: 10px;
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid #dfdfdf;
   box-shadow: 0 0 4px 0 rgba(1,1,1,0.1);
   cursor: pointer;
   ${({ inPriority }) => inPriority && 'background: #fbf8e3;'} 
+  && {
+    ${({ inPackage }) => inPackage && 'box-shadow: none; background: #edfdff; margin-top: -1px!important;'} 
+  }
 `;
 
 const Title = styled.div`
@@ -50,6 +53,7 @@ export default ({
   category,
   price,
   inPriority,
+  inPackage,
   executionType,
   doneCount,
   rejectedCount,
@@ -62,6 +66,7 @@ export default ({
 
   return (
     <Wrapper
+      inPackage={inPackage}
       inPriority={inPriority}
       className="mt-1 rounded"
       onClick={() => setOpen(!open)}

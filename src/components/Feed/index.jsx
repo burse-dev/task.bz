@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import { Form } from 'react-bootstrap';
 import TaskCard from './TaskCard';
 import Preloader from '../generic/Preloader';
+import crownIcon from '../img/crownIcon-active.svg';
+import stackIcon from '../img/stackIcon.svg';
+import singleTaskIcon from '../img/singleTaskIcon.svg';
+import Tooltip from '../generic/Tooltip';
 
 const Filter = styled.div`
   width: 200px;
@@ -19,6 +23,16 @@ const FeedDescription = styled.p`
   }
 `;
 
+const TaskType = styled.div`
+  margin-top: 10px;
+`;
+
+const TaskTypeIcon = styled.img`
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 16px;
+`;
+
 // eslint-disable-next-line react/prefer-stateless-function
 class Feed extends Component {
   constructor() {
@@ -26,7 +40,11 @@ class Feed extends Component {
 
     this.state = {
       loading: true,
-      tasks: [],
+      sortedTasks: {
+        priorityTasks: [],
+        tasks: [],
+        tasksInPackages: {},
+      },
       filter: null,
       // count: 0,
     };
@@ -75,14 +93,33 @@ class Feed extends Component {
         const responseData = await response.json();
 
         this.setState({
-          tasks: responseData.tasks,
+          sortedTasks: this.sortTasks(responseData.tasks),
           // count: responseData.count,
         });
       });
   };
 
+  sortTasks = tasks => tasks.reduce((accumulator, currentValue) => {
+    if (currentValue.inPriority) {
+      accumulator.priorityTasks.push(currentValue);
+    } else if (currentValue.taskPackId) {
+      if (!accumulator.tasksInPackages[currentValue.taskPackId]) {
+        accumulator.tasksInPackages[currentValue.taskPackId] = [];
+      }
+      accumulator.tasksInPackages[currentValue.taskPackId].push(currentValue);
+    } else {
+      accumulator.tasks.push(currentValue);
+    }
+
+    return accumulator;
+  }, {
+    priorityTasks: [],
+    tasksInPackages: [],
+    tasks: [],
+  });
+
   render() {
-    const { loading, tasks, filter } = this.state;
+    const { loading, sortedTasks, filter } = this.state;
 
     return (
       <>
@@ -112,19 +149,53 @@ class Feed extends Component {
               {loading && (
                 <Preloader className="mt-5" />
               )}
-              {!loading && tasks.map(task => (
-                <TaskCard
-                  id={task.id}
-                  title={task.title}
-                  description={task.description}
-                  category={task.category}
-                  price={task.price}
-                  inPriority={task.inPriority}
-                  executionType={task.executionType}
-                  doneCount={task.doneCount}
-                  rejectedCount={task.rejectedCount}
-                />
-              ))}
+
+              {!loading && (
+                <>
+                  {!!sortedTasks.priorityTasks.length && (
+                    <>
+                      <Tooltip
+                        content="Приоритетные задачи"
+                      >
+                        <TaskTypeIcon src={crownIcon} />
+                      </Tooltip>
+                      {sortedTasks.priorityTasks.map(task => (
+                        <TaskCard {...task} />
+                      ))}
+                    </>
+                  )}
+
+                  {!!Object.values(sortedTasks.tasksInPackages).length && (
+                    <TaskType>
+                      <Tooltip
+                        content="Пакетные задачи"
+                      >
+                        <TaskTypeIcon src={stackIcon} />
+                      </Tooltip>
+                      {Object.values(sortedTasks.tasksInPackages).map(pack => (
+                        <div className="pt-2 pb-2">
+                          {pack.map(task => (
+                            <TaskCard {...task} inPackage />
+                          ))}
+                        </div>
+                      ))}
+                    </TaskType>
+                  )}
+
+                  {!!sortedTasks.tasks.length && (
+                    <TaskType>
+                      <Tooltip
+                        content="Обычные задачи"
+                      >
+                        <TaskTypeIcon src={singleTaskIcon} />
+                      </Tooltip>
+                      {sortedTasks.tasks.map(task => (
+                        <TaskCard {...task} />
+                      ))}
+                    </TaskType>
+                  )}
+                </>
+              )}
             </Col>
           </Row>
         </Container>

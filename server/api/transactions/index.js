@@ -11,8 +11,6 @@ router.get('/transactions/refresh', async (req, res) => {
     ],
   });
 
-  // console.log(UsersList);
-
   UsersList.reduce(
     (previousPromise, User) => previousPromise.then(() => User.recalculatePayments()),
     Promise.resolve(),

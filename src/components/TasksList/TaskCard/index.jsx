@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import Tooltip from '../../generic/Tooltip';
 import Price from '../../generic/Price';
 import categories from '../../../constant/category';
@@ -8,15 +9,17 @@ import TaskStatusBadge from '../../generic/TaskStatusBadge';
 import SmallButton from '../../generic/Buttons/SmallButton';
 import editIcon from '../../img/editIcon.svg';
 import crownIcon from '../../img/crownIcon.svg';
+import removeFromPackIcon from '../../img/removeFromPackIcon.svg';
 import crownIconActive from '../../img/crownIcon-active.svg';
 import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
+import { IN_WORK_TASK_STATUS_ID } from '../../../constant/taskStatus';
 
 const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   width: 100%;
   padding: 10px;
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid #dfdfdf;
   box-shadow: 0 0 4px 0 rgba(1,1,1,0.1);
   cursor: pointer;
   transition: .2s;
@@ -27,11 +30,18 @@ const StyledLink = styled(Link)`
   &:hover {
     background: #f7f7f7;   
   }
+  && {
+    ${({ inPackage }) => inPackage && 'box-shadow: none; background: #edfdff; margin-top: -1px!important;'} 
+  }
 `;
 
 const Col = styled.div`
   display: flex;
   justify-content: center;
+`;
+
+const RemoveIcon = styled.img`
+  width: 16px;
 `;
 
 const NameCol = styled.div`
@@ -88,8 +98,13 @@ export default ({
   totalCount,
   inPriority,
   setPriority,
+  inPackage,
+  handleClickCheckbox,
+  isChecked,
+  handleClickDeleteFromPack,
 }) => (
   <StyledLink
+    inPackage={inPackage}
     to={`/tasks-list/check/${id}`}
     className="mt-1 rounded"
   >
@@ -150,10 +165,17 @@ export default ({
       <Link to={`/tasks-list/edit/${id}`}>
         <SmallButton icon={editIcon} />
       </Link>
-      <SmallButton
-        icon={inPriority ? crownIconActive : crownIcon}
-        onClick={setPriority(id)}
-      />
+
+      {!inPackage && (
+        <SmallButton
+          icon={inPriority ? crownIconActive : crownIcon}
+          onClick={setPriority(id)}
+        />
+      )}
     </EditCol>
+
+    {!inPriority && !inPackage && statusId === IN_WORK_TASK_STATUS_ID && <Form.Check onClick={handleClickCheckbox(id)} checked={isChecked} type="checkbox" />}
+
+    {inPackage && <RemoveIcon src={removeFromPackIcon} onClick={handleClickDeleteFromPack(id)} alt="Удалить из пакета" />}
   </StyledLink>
 );

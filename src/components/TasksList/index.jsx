@@ -22,8 +22,54 @@ import {
 
 const Filter = styled.div`
   width: 200px;
-  padding-left: 20px; 
+  padding: 0 20px; 
 `;
+
+const Task = ({ inPackage, task, setPriority, handleClickCheckbox, isChecked, handleClickDeleteFromPack }) => {
+  const total = task.limitTotal || null;
+  let inWork = 0;
+  let pending = 0;
+  let success = 0;
+  if (task.userTasks && task.userTasks.length) {
+    inWork = task.userTasks.reduce(
+      (accumulator, current) => ([IN_WORK_STATUS_ID, REWORK_STATUS_ID].includes(current.status) ? accumulator + 1 : accumulator),
+      0,
+    );
+
+    pending = task.userTasks.reduce(
+      (accumulator, current) => (current.status === PENDING_STATUS_ID ? accumulator + 1 : accumulator),
+      0,
+    );
+
+    success = task.userTasks.reduce(
+      (accumulator, current) => (current.status === SUCCESS_STATUS_ID ? accumulator + 1 : accumulator),
+      0,
+    );
+  }
+
+  return (
+    <TaskCard
+      key={task.id}
+      inWorkCount={inWork}
+      pendingCount={pending}
+      successCount={success}
+      totalCount={total}
+      id={task.id}
+      title={task.title}
+      description={task.description}
+      category={task.category}
+      price={task.price}
+      statusId={task.status}
+      executionType={task.executionType}
+      inPriority={task.inPriority}
+      inPackage={inPackage}
+      setPriority={setPriority}
+      handleClickCheckbox={handleClickCheckbox}
+      isChecked={isChecked(task.id)}
+      handleClickDeleteFromPack={handleClickDeleteFromPack}
+    />
+  );
+};
 
 class TasksList extends Component {
   constructor() {
@@ -31,9 +77,12 @@ class TasksList extends Component {
 
     this.state = {
       loading: true,
-      tasks: [],
+      sortedTasks: {
+        tasksInPackages: [],
+        tasks: [],
+      },
+      checkedIds: [],
       status: IN_WORK_TASK_STATUS_ID,
-      // count: 0,
     };
   }
 
@@ -65,11 +114,26 @@ class TasksList extends Component {
         const responseData = await response.json();
 
         this.setState({
-          tasks: responseData.tasks,
-          // count: responseData.count,
+          sortedTasks: this.sortTasks(responseData.tasks),
         });
       });
   };
+
+  sortTasks = tasks => tasks.reduce((accumulator, currentValue) => {
+    if (currentValue.taskPackId) {
+      if (!accumulator.tasksInPackages[currentValue.taskPackId]) {
+        accumulator.tasksInPackages[currentValue.taskPackId] = [];
+      }
+      accumulator.tasksInPackages[currentValue.taskPackId].push(currentValue);
+    } else {
+      accumulator.tasks.push(currentValue);
+    }
+
+    return accumulator;
+  }, {
+    tasksInPackages: [],
+    tasks: [],
+  });
 
   setPriority = id => async (e) => {
     e.preventDefault();
@@ -82,6 +146,62 @@ class TasksList extends Component {
       },
     })
       .then(() => this.load());
+  };
+
+  handleClickCheckbox = id => async (e) => {
+    e.stopPropagation();
+    const { checkedIds } = this.state;
+    const index = checkedIds.indexOf(id);
+    if (index !== -1) {
+      checkedIds.splice(index, 1);
+    } else {
+      checkedIds.push(id);
+    }
+
+    await this.setState({
+      checkedIds,
+    });
+  };
+
+  isChecked = (id) => {
+    const { checkedIds } = this.state;
+
+    return checkedIds.includes(id);
+  };
+
+  handleClickAddPack = () => {
+    const { checkedIds } = this.state;
+    const { authToken } = this.props;
+
+    if (!checkedIds.length) {
+      return;
+    }
+
+    fetch(`/api/tasks/addPack?ids=${checkedIds.toString()}`, {
+      method: 'POST',
+      headers: {
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    }).then(async () => {
+      await this.load();
+      this.setState({
+        checkedIds: [],
+      });
+    });
+  };
+
+  handleClickDeleteFromPack = id => (e) => {
+    e.preventDefault();
+    const { authToken } = this.props;
+
+    fetch(`/api/tasks/deleteFromPack/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    }).then(async () => {
+      await this.load();
+    });
   };
 
   setFilter = async (e) => {
@@ -100,7 +220,7 @@ class TasksList extends Component {
   };
 
   render() {
-    const { loading, tasks } = this.state;
+    const { loading, sortedTasks, checkedIds } = this.state;
     const { authToken } = this.props;
 
     if (!authToken) {
@@ -132,6 +252,7 @@ class TasksList extends Component {
               </Form.Control>
             </Filter>
 
+            {!!checkedIds.length && <Button variant="outline-info" onClick={this.handleClickAddPack}>Объединить в пакет</Button>}
           </div>
         </Container>
         <Container className="pt-3 vh-80">
@@ -141,49 +262,35 @@ class TasksList extends Component {
                 <Preloader />
               )}
               <TableHeaderCard />
-              {!loading && tasks.map((task) => {
-                const total = task.limitTotal || null;
-                let inWork = 0;
-                let pending = 0;
-                let success = 0;
-                if (task.userTasks && task.userTasks.length) {
-                  inWork = task.userTasks.reduce(
-                    (accumulator, current) => ([IN_WORK_STATUS_ID, REWORK_STATUS_ID].includes(current.status) ? accumulator + 1 : accumulator),
-                    0,
-                  );
 
-                  pending = task.userTasks.reduce(
-                    (accumulator, current) => (current.status === PENDING_STATUS_ID ? accumulator + 1 : accumulator),
-                    0,
-                  );
+              {!loading && (
+                <>
+                  {sortedTasks.tasksInPackages.map(pack => (
+                    <div className="pt-1 pb-2">
+                      {pack.map(task => (
+                        <Task
+                          inPackage
+                          task={task}
+                          setPriority={this.setPriority}
+                          handleClickCheckbox={this.handleClickCheckbox}
+                          isChecked={this.isChecked}
+                          handleClickDeleteFromPack={this.handleClickDeleteFromPack}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                  {sortedTasks.tasks.map(task => (
+                    <Task
+                      task={task}
+                      setPriority={this.setPriority}
+                      handleClickCheckbox={this.handleClickCheckbox}
+                      isChecked={this.isChecked}
+                    />
+                  ))}
+                </>
+              )}
 
-                  success = task.userTasks.reduce(
-                    (accumulator, current) => (current.status === SUCCESS_STATUS_ID ? accumulator + 1 : accumulator),
-                    0,
-                  );
-                }
-
-                return (
-                  <TaskCard
-                    key={task.id}
-                    inWorkCount={inWork}
-                    pendingCount={pending}
-                    successCount={success}
-                    totalCount={total}
-                    id={task.id}
-                    title={task.title}
-                    description={task.description}
-                    category={task.category}
-                    price={task.price}
-                    statusId={task.status}
-                    executionType={task.executionType}
-                    inPriority={task.inPriority}
-                    setPriority={this.setPriority}
-                  />
-                );
-              })}
-
-              {!loading && tasks.length === 0 && (
+              {!loading && sortedTasks.tasks.length === 0 && sortedTasks.tasksInPackages.length === 0 && (
                 <div className="p-2 small">Задач не найдено.</div>
               )}
             </Col>

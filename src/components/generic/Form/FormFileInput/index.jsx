@@ -83,8 +83,6 @@ export default class extends Component {
         const imgObj = [];
 
         [...value].forEach((file) => {
-          console.log('file', file);
-          console.log('typeof value', typeof file);
           imgObj.push(typeof file === 'string' ? file : URL.createObjectURL(file));
         });
 

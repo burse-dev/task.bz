@@ -8,7 +8,7 @@ import { REPEATED_TYPE_ID } from '../../../constant/taskExecutionType';
 
 const Wrapper = styled.div` 
   padding: 10px;
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid #dfdfdf;
   box-shadow: 0 0 4px 0 rgba(1,1,1,0.1);
   cursor: pointer;
   transition: .2s;
