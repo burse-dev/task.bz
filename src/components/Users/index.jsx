@@ -85,10 +85,11 @@ class Users extends Component {
                       <th>Логин</th>
                       <th>Почта</th>
                       <th>Баланс</th>
-                      <th>Страна</th>
-                      <th>Город</th>
-                      <th>Дата рождения</th>
+                      {/* <th>Страна</th> */}
+                      {/* <th>Город</th> */}
+                      {/* <th>Дата рождения</th> */}
                       <th>Дата регистрации</th>
+                      <th>Посл. активность</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -98,10 +99,11 @@ class Users extends Component {
                         <td>{user.login}</td>
                         <td>{user.email}</td>
                         <td>{user.balance}</td>
-                        <td>{user.country}</td>
-                        <td>{user.city}</td>
-                        <td>{user.dob && moment(user.dob).format('DD.MM.YY')}</td>
+                        {/* <td>{user.country}</td> */}
+                        {/* <td>{user.city}</td> */}
+                        {/* <td>{user.dob && moment(user.dob).format('DD.MM.YY')}</td> */}
                         <td>{moment(user.createdAt).format('DD.MM.YY HH:mm')}</td>
+                        <td>{user.lastActivity && moment(user.lastActivity).format('DD.MM.YY HH:mm')}</td>
                       </tr>
                     ))}
                   </tbody>

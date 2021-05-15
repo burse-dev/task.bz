@@ -16,8 +16,13 @@ const Users = db.define('users', {
   phone: Sequelize.TEXT,
   city: Sequelize.TEXT,
   password: Sequelize.TEXT,
+  lastActivity: Sequelize.DATE,
+  status: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+  },
 });
-
 
 // eslint-disable-next-line func-names
 Users.prototype.recalculatePayments = async function () {

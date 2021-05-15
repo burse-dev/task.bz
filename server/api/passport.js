@@ -17,6 +17,10 @@ passport.use(new Strategy({
     });
 
     if (existingUser) {
+      existingUser.update({
+        lastActivity: new Date(),
+      });
+
       return done(null, existingUser);
     }
 
