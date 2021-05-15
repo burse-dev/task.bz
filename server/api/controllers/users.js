@@ -163,6 +163,7 @@ export const save = async (req, res) => {
 export const getWorks = async (req, res, next) => {
   try {
     const User = req.user;
+    const { status } = req.query;
 
     UserTasks.findAndCountAll({
       include: [
@@ -171,6 +172,7 @@ export const getWorks = async (req, res, next) => {
         },
       ],
       where: {
+        ...(status && { status }),
         userId: User.id,
       },
     }).then((result) => {
