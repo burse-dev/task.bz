@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import Requisites from './requisites';
 import UserTasks from './userTasks';
 import Transactions from './transactions';
+import UserAchievement from './userAchievements';
 
 const db = require('../config/database');
 
@@ -44,6 +45,8 @@ Users.hasMany(UserTasks);
 UserTasks.belongsTo(Users);
 
 Users.hasMany(Requisites);
+
+Users.hasMany(UserAchievement);
 
 Users.hasMany(Transactions);
 Transactions.belongsTo(Users);

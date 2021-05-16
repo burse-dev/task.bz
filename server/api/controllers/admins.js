@@ -18,6 +18,8 @@ import { ADD_TYPE_ID, DIFF_TYPE_ID } from '../../../src/constant/transactionType
 import mailer from '../../services/mailer';
 import taskApprovedTemplate from '../../templates/taskApproved';
 import ticketApprovedTemplate from '../../templates/ticketApproved';
+import { ACTIVE_USER_STATUS_ID, BANNED_USER_STATUS_ID } from '../../../src/constant/userStatus';
+import UserAchievement from '../../models/userAchievements';
 
 export const getReports = async (req, res, next) => {
   try {
@@ -106,6 +108,35 @@ export const approveReports = async (req, res, next) => {
         status: SUCCESS_STATUS_ID,
         wasPaid: true,
       });
+
+      // проверить достижение ачивки
+      const doneUserTasksCount = await UserTasks.count({
+        where: {
+          userId: User.id,
+          status: SUCCESS_STATUS_ID,
+        },
+      });
+
+      console.log(doneUserTasksCount);
+
+      let achieveVal;
+      if (doneUserTasksCount > 4 && doneUserTasksCount < 50) {
+        achieveVal = '10';
+      } else if (doneUserTasksCount > 49 && doneUserTasksCount < 100) {
+        achieveVal = '50';
+      } else if (doneUserTasksCount > 99) {
+        achieveVal = '100';
+      }
+
+      if (achieveVal) {
+        await UserAchievement.findOrCreate({
+          where: {
+            userId: User.id,
+            value: achieveVal,
+          },
+        });
+      }
+      //
 
       // проверить, выполнил ли он остальные задачи в пачке. Если да, то то выдать награду
       if (userTask.task.taskPackId) {
@@ -282,6 +313,46 @@ export const rejectTicket = async (req, res, next) => {
         id,
       },
     });
+
+    return res.json({});
+  } catch (e) {
+    return next(e);
+  }
+};
+
+export const banUser = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+
+    const User = await Users.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!User) {
+      return res.json({});
+    }
+
+    let newStatus;
+
+    if (User.status === BANNED_USER_STATUS_ID) {
+      newStatus = ACTIVE_USER_STATUS_ID;
+    }
+
+    if (User.status === ACTIVE_USER_STATUS_ID) {
+      newStatus = BANNED_USER_STATUS_ID;
+    }
+
+    if (newStatus) {
+      await User.update({
+        status: newStatus,
+      }, {
+        where: {
+          id,
+        },
+      });
+    }
 
     return res.json({});
   } catch (e) {

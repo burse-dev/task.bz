@@ -13,6 +13,7 @@ import {
   getTickets,
   cancelTicket,
   getAccruals,
+  getAchievements,
   save,
 } from '../controllers/users';
 
@@ -30,6 +31,8 @@ router.get('/user/works', passport.authenticate('jwt', { session: false }), getW
 router.get('/user/getTickets', passport.authenticate('jwt', { session: false }), getTickets);
 
 router.get('/user/getAccruals', passport.authenticate('jwt', { session: false }), getAccruals);
+
+router.get('/user/getAchievements', passport.authenticate('jwt', { session: false }), getAchievements);
 
 router.post('/user/makeTask', passport.authenticate('jwt', { session: false }), makeTask);
 

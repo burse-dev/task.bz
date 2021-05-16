@@ -120,6 +120,9 @@ class Task extends Component {
                   if (userTasksAvailability.reason === 'interval') {
                     reason = 'Задача станет доступной для выполнения после отправки отчета и по прошествию интервала времени';
                   }
+                  if (userTasksAvailability.reason === 'banned') {
+                    reason = 'Ваш аккаунт заблокирован';
+                  }
                   if (userTasksAvailability.reason === 'default') {
                     reason = 'Задача станет доступной для выполнения после отправки отчета и по прошествию интервала времени';
                   }

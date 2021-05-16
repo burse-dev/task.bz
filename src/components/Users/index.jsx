@@ -7,6 +7,10 @@ import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import Preloader from '../generic/Preloader';
 import loadUserData from '../../actions/user';
+import SmallButton from '../generic/Buttons/SmallButton';
+import bannedIcon from '../img/bannedIcon.svg';
+import bannedIconActive from '../img/bannedIcon-active.svg';
+import { BANNED_USER_STATUS_ID } from '../../constant/userStatus';
 
 class Users extends Component {
   constructor() {
@@ -52,6 +56,24 @@ class Users extends Component {
       });
   };
 
+  handleClickBan = id => () => {
+    const { authToken } = this.props;
+
+    const formData = new FormData();
+    formData.append('id', id);
+
+    return fetch('/api/admin/banUser', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+      body: formData,
+    })
+      .then(async () => {
+        await this.load();
+      });
+  };
+
   render() {
     const { loading, users } = this.state;
     const { authToken } = this.props;
@@ -90,6 +112,7 @@ class Users extends Component {
                       {/* <th>Дата рождения</th> */}
                       <th>Дата регистрации</th>
                       <th>Посл. активность</th>
+                      <th>Бан</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -104,6 +127,13 @@ class Users extends Component {
                         {/* <td>{user.dob && moment(user.dob).format('DD.MM.YY')}</td> */}
                         <td>{moment(user.createdAt).format('DD.MM.YY HH:mm')}</td>
                         <td>{user.lastActivity && moment(user.lastActivity).format('DD.MM.YY HH:mm')}</td>
+                        <td>
+                          <SmallButton
+                            icon={user.status === BANNED_USER_STATUS_ID
+                              ? bannedIconActive : bannedIcon}
+                            onClick={this.handleClickBan(user.id)}
+                          />
+                        </td>
                       </tr>
                     ))}
                   </tbody>

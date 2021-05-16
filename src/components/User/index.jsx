@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
+import styled from 'styled-components';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { ListGroup, Tab } from 'react-bootstrap';
@@ -12,7 +13,16 @@ import CancelTicketForm from './CancelTicketForm';
 import Accruals from './Accruals';
 import RequisitesForm from './RequisitesForm';
 import loadUserData from '../../actions/user';
+import Tooltip from '../generic/Tooltip';
 import { PENDING_TICKET_STATUS_ID } from '../../constant/ticketStatus';
+import achive10 from '../img/10tasks.svg';
+import achive50 from '../img/50tasks.svg';
+import achive100 from '../img/100tasks.svg';
+
+const AchiveIcon = styled.img`
+  width: 50px;
+  opacity: ${({ isTaken }) => (isTaken ? '1' : '0.3')}
+`;
 
 class User extends Component {
   constructor() {
@@ -22,6 +32,7 @@ class User extends Component {
       loading: true,
       tickets: [],
       accruals: [],
+      achievements: [],
       userData: null,
       activeTabKey: '#profile',
     };
@@ -42,6 +53,8 @@ class User extends Component {
     await this.loadTickets();
 
     await this.loadAccruals();
+
+    await this.loadAchievements();
 
     this.setState({
       loading: false,
@@ -100,6 +113,23 @@ class User extends Component {
         const responseData = await response.json();
         this.setState({
           accruals: responseData,
+        });
+      });
+  };
+
+  loadAchievements = () => {
+    const { authToken } = this.props;
+    return fetch('/api/user/getAchievements', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Authorization': `Bearer ${authToken}`,
+      },
+    })
+      .then(async (response) => {
+        const responseData = await response.json();
+        this.setState({
+          achievements: responseData,
         });
       });
   };
@@ -205,8 +235,10 @@ class User extends Component {
       });
   };
 
+  checkAchieve = (achieve, achievements) => achievements.findIndex(i => i.value === achieve) !== -1;
+
   render() {
-    const { loading, userData, tickets, accruals, activeTabKey } = this.state;
+    const { loading, userData, tickets, accruals, achievements, activeTabKey } = this.state;
     const { user, authToken } = this.props;
 
     const PendingTicket = tickets.find(ticket => ticket.status === PENDING_TICKET_STATUS_ID);
@@ -245,6 +277,21 @@ class User extends Component {
                     Выплаты
                   </ListGroup.Item>
                 </ListGroup>
+
+                <div>
+                  Достижения:
+                  <div className="pt-2 pb-4 d-flex w-100">
+                    <Tooltip content="10 выполненных задач">
+                      <AchiveIcon alt="10 выполненных задач" src={achive10} isTaken={this.checkAchieve('10', achievements)} />
+                    </Tooltip>
+                    <Tooltip content="50 выполненных задач">
+                      <AchiveIcon alt="50 выполненных задач" src={achive50} isTaken={this.checkAchieve('50', achievements)} />
+                    </Tooltip>
+                    <Tooltip content="100 выполненных задач">
+                      <AchiveIcon alt="100 выполненных задач" src={achive100} isTaken={this.checkAchieve('100', achievements)} />
+                    </Tooltip>
+                  </div>
+                </div>
               </Col>
               <Col lg={6}>
                 {loading && (

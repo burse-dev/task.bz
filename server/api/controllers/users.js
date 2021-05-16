@@ -7,6 +7,7 @@ import Tasks from '../../models/tasks';
 import Files from '../../models/files';
 import Requisites from '../../models/requisites';
 import UserTasks from '../../models/userTasks';
+import UserAchievements from '../../models/userAchievements';
 import generateHash from '../../functions/generateHash';
 import { IN_WORK_STATUS_ID, PENDING_STATUS_ID } from '../../../src/constant/taskExecutionStatus';
 import Tickets from '../../models/tickets';
@@ -101,6 +102,19 @@ export const getAccruals = async (req, res) => {
   });
 
   res.json(accruals);
+};
+
+export const getAchievements = async (req, res) => {
+  const User = req.user;
+
+  const achievements = await UserAchievements.findAll({
+    where: {
+      userId: User.id,
+    },
+    attributes: ['value'],
+  });
+
+  res.json(achievements);
 };
 
 export const addTicket = async (req, res) => {

@@ -9,7 +9,7 @@ export const getList = async (req, res, next) => {
         type: USER_TYPE_ID,
       },
       attributes: [
-        'email', 'login', 'createdAt', 'balance', 'city', 'country', 'type', 'dob', 'id', 'lastActivity',
+        'id', 'email', 'login', 'createdAt', 'balance', 'city', 'country', 'type', 'dob', 'status', 'lastActivity',
       ],
       order: [
         ['createdAt', 'DESC'],

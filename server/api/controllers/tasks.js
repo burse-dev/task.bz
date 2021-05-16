@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import moment from 'moment';
 import { IN_WORK_TASK_STATUS_ID, REMOVED_TASK_STATUS_ID } from '../../../src/constant/taskStatus';
 import Tasks from '../../models/tasks';
+import Users from '../../models/users';
 import UserTasks from '../../models/userTasks';
 import TaskPacks from '../../models/taskPack';
 import {
@@ -14,6 +15,7 @@ import {
   AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID,
   EXECUTION_INTERVALS_VALUES_IN_HOURS,
 } from '../../../src/constant/taskExecutionIntervalType';
+import { BANNED_USER_STATUS_ID } from '../../../src/constant/userStatus';
 
 export const save = async (req, res) => {
   const {
@@ -127,6 +129,20 @@ export const remove = async (req, res) => {
 };
 
 export const checkTaskAvailability = async (taskId, userId) => {
+  const user = await Users.findOne({
+    where: {
+      id: userId,
+    },
+  });
+
+  // Бан
+  if (user.status === BANNED_USER_STATUS_ID) {
+    return {
+      availability: false,
+      reason: 'banned',
+    };
+  }
+
   const Task = await Tasks.findOne({
     where: {
       [Op.and]: {

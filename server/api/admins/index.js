@@ -7,6 +7,7 @@ import {
   reworkReport,
   getTickets,
   rejectTicket,
+  banUser,
   approveTicket,
 } from '../controllers/admins';
 
@@ -28,6 +29,8 @@ router.post('/reports/rework', passport.authenticate('jwt', { session: false }),
 router.get('/admin/getTickets', passport.authenticate('jwt', { session: false }), getTickets);
 
 router.post('/admin/rejectTicket', passport.authenticate('jwt', { session: false }), rejectTicket);
+
+router.post('/admin/banUser', passport.authenticate('jwt', { session: false }), banUser);
 
 router.post('/admin/approveTicket', passport.authenticate('jwt', { session: false }), approveTicket);
 
