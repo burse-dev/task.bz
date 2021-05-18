@@ -79,6 +79,7 @@ const Title = styled.div`
 `;
 
 const Category = styled.div`
+  padding-right: 10px;
   font-size: 12px;
   color: #888;
 `;
@@ -116,14 +117,14 @@ export default ({
           {title}
         </div>
       </Title>
-      <Category>
-        Категория:
-        {' '}
-        {getCategoryById(category).name}
-      </Category>
-      <Category>
-        {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
-      </Category>
+      <div className="d-flex">
+        <Category>
+          {getCategoryById(category).name}
+        </Category>
+        <Category>
+          {executionType === REPEATED_TYPE_ID ? 'Многоразовое' : 'Одноразовое' }
+        </Category>
+      </div>
     </NameCol>
     <PriceCol>
       <Price price={price} />

@@ -10,7 +10,6 @@ import Preloader from '../generic/Preloader';
 import crownIcon from '../img/crownIcon-active.svg';
 import stackIcon from '../img/stackIcon.svg';
 import singleTaskIcon from '../img/singleTaskIcon.svg';
-import Tooltip from '../generic/Tooltip';
 
 const Filter = styled.div`
   width: 200px;
@@ -154,11 +153,10 @@ class Feed extends Component {
                 <>
                   {!!sortedTasks.priorityTasks.length && (
                     <>
-                      <Tooltip
-                        content="Приоритетные задачи"
-                      >
+                      <div className="d-flex">
                         <TaskTypeIcon src={crownIcon} />
-                      </Tooltip>
+                        <div className="pl-2">Приоритетные задачи</div>
+                      </div>
                       {sortedTasks.priorityTasks.map(task => (
                         <TaskCard {...task} />
                       ))}
@@ -167,11 +165,10 @@ class Feed extends Component {
 
                   {!!Object.values(sortedTasks.tasksInPackages).length && (
                     <TaskType>
-                      <Tooltip
-                        content="Пакетные задачи"
-                      >
+                      <div className="d-flex">
                         <TaskTypeIcon src={stackIcon} />
-                      </Tooltip>
+                        <div className="pl-2">Пакетные задачи</div>
+                      </div>
                       {Object.values(sortedTasks.tasksInPackages).map(pack => (
                         <div className="pt-2 pb-2">
                           {pack.map(task => (
@@ -184,11 +181,10 @@ class Feed extends Component {
 
                   {!!sortedTasks.tasks.length && (
                     <TaskType>
-                      <Tooltip
-                        content="Обычные задачи"
-                      >
+                      <div className="d-flex">
                         <TaskTypeIcon src={singleTaskIcon} />
-                      </Tooltip>
+                        <div className="pl-2">Обычные задачи</div>
+                      </div>
                       {sortedTasks.tasks.map(task => (
                         <TaskCard {...task} />
                       ))}

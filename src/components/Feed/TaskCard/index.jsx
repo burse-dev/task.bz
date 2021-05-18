@@ -84,8 +84,6 @@ export default ({
 
         <div className="d-flex">
           <Category>
-            Категория:
-            {' '}
             {getCategoryById(category).name}
           </Category>
 

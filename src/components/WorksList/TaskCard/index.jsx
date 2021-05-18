@@ -56,8 +56,6 @@ export default ({ to, title, statusId, category, price, executionType }) => (
 
     <div className="d-flex">
       <Category className="pr-2">
-        Категория:
-        {' '}
         {getCategoryById(category).name}
       </Category>
       <Category>
