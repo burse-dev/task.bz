@@ -36,6 +36,8 @@ export default ({
       <section>
         <b>Категория: </b>
         {getTypeNameById(category, categories)}
+        {', '}
+        {executionType === REPEATED_TYPE_ID ? 'могоразовое' : 'одноразовое' }
       </section>
       <section>
         <h5 className="pt-2">Задание</h5>

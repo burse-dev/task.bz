@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import TableHeaderCard from './TableHeaderCard';
 import TaskCard from './TaskCard';
+import TaskPackModal from './TaskPackModal';
 import Preloader from '../generic/Preloader';
 import {
   IN_WORK_STATUS_ID,
@@ -81,6 +82,7 @@ class TasksList extends Component {
         tasksInPackages: [],
         tasks: [],
       },
+      isModalOpen: false,
       checkedIds: [],
       status: IN_WORK_TASK_STATUS_ID,
     };
@@ -169,7 +171,13 @@ class TasksList extends Component {
     return checkedIds.includes(id);
   };
 
-  handleClickAddPack = () => {
+  handleClickCloseModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  };
+
+  handleClickSavePack = (values) => {
     const { checkedIds } = this.state;
     const { authToken } = this.props;
 
@@ -177,16 +185,31 @@ class TasksList extends Component {
       return;
     }
 
-    fetch(`/api/tasks/addPack?ids=${checkedIds.toString()}`, {
+    const formData = new FormData();
+    formData.append('ids', checkedIds.toString());
+    formData.append('title', values.title);
+    formData.append('bonus', values.bonus);
+
+    fetch('/api/tasks/addPack', {
       method: 'POST',
       headers: {
         'X-Authorization': `Bearer ${authToken}`,
       },
+      body: formData,
     }).then(async () => {
+      this.setState({
+        isModalOpen: false,
+      });
       await this.load();
       this.setState({
         checkedIds: [],
       });
+    });
+  };
+
+  handleClickAddPack = () => {
+    this.setState({
+      isModalOpen: true,
     });
   };
 
@@ -220,7 +243,7 @@ class TasksList extends Component {
   };
 
   render() {
-    const { loading, sortedTasks, checkedIds } = this.state;
+    const { loading, sortedTasks, checkedIds, isModalOpen } = this.state;
     const { authToken } = this.props;
 
     if (!authToken) {
@@ -252,7 +275,7 @@ class TasksList extends Component {
               </Form.Control>
             </Filter>
 
-            {!!checkedIds.length && <Button variant="outline-info" onClick={this.handleClickAddPack}>Объединить в пакет</Button>}
+            {checkedIds.length > 1 && <Button variant="outline-info" onClick={this.handleClickAddPack}>Объединить в пакет</Button>}
           </div>
         </Container>
         <Container className="pt-3 vh-80">
@@ -296,6 +319,11 @@ class TasksList extends Component {
             </Col>
           </Row>
         </Container>
+        <TaskPackModal
+          isOpen={isModalOpen}
+          handleClose={this.handleClickCloseModal}
+          handleSave={this.handleClickSavePack}
+        />
       </>
     );
   }

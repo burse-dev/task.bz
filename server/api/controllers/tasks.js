@@ -271,10 +271,14 @@ export const setPriority = async (req, res) => {
 
 export const addPack = async (req, res, next) => {
   try {
-    const idsStr = req.query.ids;
+    const idsStr = req.body.ids;
+    const { title, bonus } = req.body;
     const ids = idsStr ? idsStr.split(',') : [];
 
-    const TaskPack = await TaskPacks.create({});
+    const TaskPack = await TaskPacks.create({
+      title,
+      bonusPercentage: bonus,
+    });
 
     await Tasks.update({
       taskPackId: TaskPack.id,
