@@ -17,9 +17,14 @@ import {
 } from '../../constant/taskExecutionStatus';
 import TaskDetails from './TaskDetails';
 
-const ReportForm = ({ handleSubmit }) => (
+const ReportForm = ({ handleSubmit, reply }) => (
   <Form onSubmit={handleSubmit}>
     <Form.Group>
+      {reply && (
+        <p>
+          {`Комментарий заказчика: ${reply}`}
+        </p>
+      )}
       <Form.Label>Отчет о выполнении</Form.Label>
       <Field
         name="report"
@@ -213,6 +218,7 @@ class Task extends Component {
                           report: userTask.report,
                           screenshots,
                         }}
+                        reply={userTask.reply}
                       />
                     )}
 
@@ -230,6 +236,24 @@ class Task extends Component {
                         {/* eslint-disable-next-line max-len */}
                         <p>Заказчик должен проверить и подтвердить ваш отчет, если этого не произойдет в течение 72 часов, задание будует считаться выполненным</p>
                         <hr />
+
+                        {userTask.reply && (
+                          <>
+                            <>
+                              Комментарий заказчика:
+                              {' '}
+                              {userTask.reply}
+                            </>
+                            <hr />
+                          </>
+                        )}
+
+                        {userTask.report && (
+                          <>
+                            {`Отчет: ${userTask.report}`}
+                            <hr />
+                          </>
+                        )}
                         <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
                       </div>
                     )}
@@ -243,7 +267,7 @@ class Task extends Component {
                     {userTask.status === REWORK_STATUS_ID && (
                       <div className="alert alert-warning" role="alert">
                         <h4 className="alert-heading">Требует доработки</h4>
-                        <p>{userTask.reply}</p>
+                        <p>{`Комментарий заказчика: ${userTask.reply}`}</p>
                         <hr />
                         <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
                       </div>
