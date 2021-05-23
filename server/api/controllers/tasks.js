@@ -16,6 +16,7 @@ import {
   EXECUTION_INTERVALS_VALUES_IN_HOURS,
 } from '../../../src/constant/taskExecutionIntervalType';
 import { BANNED_USER_STATUS_ID } from '../../../src/constant/userStatus';
+import { ADMIN_TYPE_ID } from '../../../src/constant/userType';
 
 export const save = async (req, res) => {
   const {
@@ -136,6 +137,14 @@ export const checkTaskAvailability = async (taskId, userId) => {
   });
 
   // Бан
+  if (user.type === ADMIN_TYPE_ID) {
+    return {
+      availability: false,
+      reason: 'admin',
+    };
+  }
+
+  // Бан
   if (user.status === BANNED_USER_STATUS_ID) {
     return {
       availability: false,
@@ -210,6 +219,7 @@ export const checkTaskAvailability = async (taskId, userId) => {
   // если отклик на задачу уже был и задача одноразовая
   if (UserTask && Task.executionType === ONE_TIME_TYPE_ID) {
     return {
+      taskExecution: UserTask.id,
       availability: false,
       reason: 'one_time',
     };
@@ -226,8 +236,23 @@ export const checkTaskAvailability = async (taskId, userId) => {
       };
     }
 
+    if (UserTask.status === IN_WORK_STATUS_ID) {
+      return {
+        taskExecution: UserTask.id,
+        reason: 'in_work',
+        availability: false,
+      };
+    }
+
+    if (UserTask.status === PENDING_STATUS_ID) {
+      return {
+        taskExecution: UserTask.id,
+        reason: 'pending',
+        availability: false,
+      };
+    }
+
     if (UserTask.readyDate) {
-      // если многоразовое выполнение + отчет отправлен + прошел интервал полсе пред. отчета
       const hours = EXECUTION_INTERVALS_VALUES_IN_HOURS[Task.executionInterval];
       const dateInterval = moment(UserTask.readyDate)
         .add(hours, 'hours')
@@ -237,6 +262,7 @@ export const checkTaskAvailability = async (taskId, userId) => {
         Task.executionInterval > AFTER_CHECKING_TASK_EXECUTION_INTERVAL_TYPE_ID
         && (new Date() > dateInterval)
       ) {
+        // если многоразовое выполнение + отчет отправлен + прошел интервал полсе пред. отчета
         return {
           availability: true,
         };
@@ -274,6 +300,10 @@ export const addPack = async (req, res, next) => {
     const idsStr = req.body.ids;
     const { title, bonus } = req.body;
     const ids = idsStr ? idsStr.split(',') : [];
+
+    if (!bonus || !title || ids.length === 0) {
+      res.json(false);
+    }
 
     const TaskPack = await TaskPacks.create({
       title,

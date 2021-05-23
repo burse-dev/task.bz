@@ -357,7 +357,33 @@ export const checkUserTask = async (req, res, next) => {
       },
     });
 
-    return res.json(UserTask);
+    let nextTaskId;
+    if (UserTask.task.taskPackId) {
+      const tasks = await Tasks.findAll({
+        attributes: [
+          'id',
+        ],
+        where: {
+          taskPackId: UserTask.task.taskPackId,
+        },
+        order: [
+          ['createdAt', 'ASC'],
+        ],
+      });
+
+      const currentTaskIndex = tasks.findIndex(task => (task.id === UserTask.taskId));
+
+      if (currentTaskIndex !== -1 && currentTaskIndex !== tasks.length - 1) {
+        nextTaskId = tasks[currentTaskIndex + 1].id;
+      }
+    }
+
+    const result = {
+      ...UserTask.dataValues,
+      nextTaskId,
+    };
+
+    return res.json(result);
   } catch (e) {
     return next(e);
   }

@@ -20,6 +20,7 @@ import taskApprovedTemplate from '../../templates/taskApproved';
 import ticketApprovedTemplate from '../../templates/ticketApproved';
 import { ACTIVE_USER_STATUS_ID, BANNED_USER_STATUS_ID } from '../../../src/constant/userStatus';
 import UserAchievement from '../../models/userAchievements';
+import TaskPacks from '../../models/taskPack';
 
 export const getReports = async (req, res, next) => {
   try {
@@ -117,8 +118,6 @@ export const approveReports = async (req, res, next) => {
         },
       });
 
-      console.log(doneUserTasksCount);
-
       let achieveVal;
       if (doneUserTasksCount > 4 && doneUserTasksCount < 50) {
         achieveVal = '10';
@@ -136,7 +135,7 @@ export const approveReports = async (req, res, next) => {
           },
         });
       }
-      //
+      // ! проверить достижение ачивки
 
       // проверить, выполнил ли он остальные задачи в пачке. Если да, то то выдать награду
       if (userTask.task.taskPackId) {
@@ -154,23 +153,31 @@ export const approveReports = async (req, res, next) => {
           where: {
             status: SUCCESS_STATUS_ID,
             taskId: taskIds,
+            userId: userTask.userId,
           },
           attributes: ['taskId'],
           distinct: true,
         });
 
         if ((doneUserTasks.count === tasks.count) && userTask.wasPaidPackBonus !== true) {
+          const TaskPack = await TaskPacks.findOne({
+            where: {
+              id: userTask.task.taskPackId,
+            },
+          });
+
           await Transactions.create({
             type: ADD_TYPE_ID,
             userId: userTask.userId,
-            description: 'Бонус за выполнение пакета задач',
-            value: Math.round(sum * 0.2),
+            description: `Бонус за выполнение пакета задач: ${TaskPack.title}`,
+            value: Math.round(sum * TaskPack.bonusPercentage / 100),
           });
 
           await UserTasks.update({
             wasPaidPackBonus: true,
           }, {
             where: {
+              taskId: taskIds,
               userId: userTask.userId,
             },
           });

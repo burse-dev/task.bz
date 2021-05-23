@@ -4,6 +4,20 @@ import Form from 'react-bootstrap/Form';
 import { Field, reduxForm } from 'redux-form';
 import FormControl from '../../generic/Form/FormControlRedux';
 
+const validate = (values) => {
+  const errors = {};
+
+  if (!values.title) {
+    errors.title = true;
+  }
+
+  if (!values.bonus) {
+    errors.bonus = true;
+  }
+
+  return errors;
+};
+
 const AddTaskPackForm = ({ handleSubmit }) => (
   <>
     <Form onSubmit={handleSubmit}>
@@ -45,6 +59,7 @@ const AddTaskPackForm = ({ handleSubmit }) => (
 const AddTaskPackFormRedux = reduxForm({
   form: 'addTaskPackForm',
   enableReinitialize: true,
+  validate,
 })(AddTaskPackForm);
 
 export default ({ isOpen, handleClose, handleSave }) => (

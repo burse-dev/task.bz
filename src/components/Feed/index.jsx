@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import { connect } from 'react-redux';
 import { Form } from 'react-bootstrap';
 import TaskCard from './TaskCard';
+import TaskPackage from './TaskPackage';
 import Preloader from '../generic/Preloader';
 import crownIcon from '../img/crownIcon-active.svg';
 import stackIcon from '../img/stackIcon.svg';
@@ -20,10 +21,6 @@ const FeedDescription = styled.p`
     font-size: 14px;
     margin-bottom: 0;
   }
-`;
-
-const TaskType = styled.div`
-  margin-top: 10px;
 `;
 
 const TaskTypeIcon = styled.img`
@@ -42,10 +39,9 @@ class Feed extends Component {
       sortedTasks: {
         priorityTasks: [],
         tasks: [],
-        tasksInPackages: {},
       },
+      taskPackages: [],
       filter: null,
-      // count: 0,
     };
   }
 
@@ -82,30 +78,29 @@ class Feed extends Component {
       ...(filter && { filter }),
     });
 
-    return fetch(`/api/feedTasks?${query}`, {
+    const feedTasks = await fetch(`/api/feedTasks?${query}`, {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-    })
-      .then(async (response) => {
-        const responseData = await response.json();
+    }).then(response => response.json());
 
-        this.setState({
-          sortedTasks: this.sortTasks(responseData.tasks),
-          // count: responseData.count,
-        });
-      });
+    const taskPackages = await fetch(`/api/feedPackTasks?${query}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }).then(response => response.json());
+
+    this.setState({
+      sortedTasks: this.sortTasks(feedTasks.tasks),
+      taskPackages,
+    });
   };
 
   sortTasks = tasks => tasks.reduce((accumulator, currentValue) => {
     if (currentValue.inPriority) {
       accumulator.priorityTasks.push(currentValue);
-    } else if (currentValue.taskPackId) {
-      if (!accumulator.tasksInPackages[currentValue.taskPackId]) {
-        accumulator.tasksInPackages[currentValue.taskPackId] = [];
-      }
-      accumulator.tasksInPackages[currentValue.taskPackId].push(currentValue);
     } else {
       accumulator.tasks.push(currentValue);
     }
@@ -113,12 +108,11 @@ class Feed extends Component {
     return accumulator;
   }, {
     priorityTasks: [],
-    tasksInPackages: [],
     tasks: [],
   });
 
   render() {
-    const { loading, sortedTasks, filter } = this.state;
+    const { loading, sortedTasks, filter, taskPackages } = this.state;
 
     return (
       <>
@@ -152,7 +146,7 @@ class Feed extends Component {
               {!loading && (
                 <>
                   {!!sortedTasks.priorityTasks.length && (
-                    <>
+                    <div className="pb-3">
                       <div className="d-flex">
                         <TaskTypeIcon src={crownIcon} />
                         <div className="pl-2">Приоритетные задачи</div>
@@ -160,27 +154,23 @@ class Feed extends Component {
                       {sortedTasks.priorityTasks.map(task => (
                         <TaskCard {...task} />
                       ))}
-                    </>
+                    </div>
                   )}
 
-                  {!!Object.values(sortedTasks.tasksInPackages).length && (
-                    <TaskType>
+                  {!!taskPackages.length && (
+                    <div className="pb-3">
                       <div className="d-flex">
                         <TaskTypeIcon src={stackIcon} />
                         <div className="pl-2">Пакетные задачи</div>
                       </div>
-                      {Object.values(sortedTasks.tasksInPackages).map(pack => (
-                        <div className="pt-2 pb-2">
-                          {pack.map(task => (
-                            <TaskCard {...task} inPackage />
-                          ))}
-                        </div>
+                      {taskPackages.map(pack => (
+                        <TaskPackage {...pack} />
                       ))}
-                    </TaskType>
+                    </div>
                   )}
 
                   {!!sortedTasks.tasks.length && (
-                    <TaskType>
+                    <div className="pb-3">
                       <div className="d-flex">
                         <TaskTypeIcon src={singleTaskIcon} />
                         <div className="pl-2">Обычные задачи</div>
@@ -188,7 +178,7 @@ class Feed extends Component {
                       {sortedTasks.tasks.map(task => (
                         <TaskCard {...task} />
                       ))}
-                    </TaskType>
+                    </div>
                   )}
                 </>
               )}

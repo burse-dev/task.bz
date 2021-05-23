@@ -19,6 +19,7 @@ import {
   REWORK_STATUS_ID,
   SUCCESS_STATUS_ID,
 } from '../../../src/constant/taskExecutionStatus';
+import TaskPacks from '../../models/taskPack';
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ router.get('/feedTasks', async (req, res, next) => {
                     AND "userTasks"."status" IN (${IN_WORK_STATUS_ID}, ${PENDING_STATUS_ID}, ${REWORK_STATUS_ID}, ${REJECTED_STATUS_ID}, ${SUCCESS_STATUS_ID})
                 LEFT JOIN "userTasks" as "userTasksDone" ON "tasks"."id" = "userTasksDone"."taskId" AND "userTasksDone"."status" = ${SUCCESS_STATUS_ID}
                 LEFT JOIN "userTasks" as "userTasksRejected" ON "tasks"."id" = "userTasksRejected"."taskId" AND "userTasksRejected"."status" = ${REJECTED_STATUS_ID}
-                WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) ${executionTypeFilter} 
+                WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) AND "tasks"."taskPackId" is NULL ${executionTypeFilter} 
                 AND "tasks"."status" = 1
                 GROUP BY "tasks"."id"
                 HAVING (COUNT("userTasks"."taskId") < "tasks"."limitTotal" OR "tasks"."limitTotal" IS NULL)
@@ -76,10 +77,64 @@ router.get('/feedTasks', async (req, res, next) => {
   }
 });
 
+router.get('/feedPackTasks', async (req, res, next) => {
+  try {
+    const { filter } = req.query;
+
+    const packs = await TaskPacks.findAll({
+      attributes: [
+        'id',
+        'title',
+        'bonusPercentage',
+      ],
+      include: [{
+        model: Tasks,
+        attributes: [
+          'id',
+          'title',
+          'price',
+        ],
+        required: true,
+      }],
+      order: [
+        ['createdAt', 'DESC'],
+        ['tasks', 'createdAt', 'ASC'],
+      ],
+    });
+
+    let result = packs.map(({ tasks, bonusPercentage, title }) => {
+      const tasksPriceSum = tasks.reduce(
+        (accumulator, current) => accumulator + current.price,
+        0,
+      );
+
+      const totalPrice = tasksPriceSum + Math.round(tasksPriceSum * bonusPercentage / 100);
+
+      return {
+        title,
+        bonusPercentage,
+        totalPrice,
+        tasks,
+      };
+    });
+
+    if (filter === 'increase') {
+      result = result.sort((a, b) => a.totalPrice - b.totalPrice);
+    }
+    if (filter === 'decrease') {
+      result = result.sort((a, b) => b.totalPrice - a.totalPrice);
+    }
+
+    res.json(result);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get('/tasks', async (req, res, next) => {
   try {
     const statusId = req.query.status;
-    Tasks.findAndCountAll({
+    const result = await Tasks.findAndCountAll({
       where: {
         ...(statusId && { status: statusId }),
       },
@@ -103,13 +158,12 @@ router.get('/tasks', async (req, res, next) => {
       order: [
         ['createdAt', 'DESC'],
       ],
-    })
-      .then((result) => {
-        res.json({
-          count: result.count,
-          tasks: result.rows,
-        });
-      });
+    });
+
+    res.json({
+      count: result.count,
+      tasks: result.rows,
+    });
   } catch (e) {
     next(e);
   }

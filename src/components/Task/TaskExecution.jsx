@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import CardWrapper from './CardWrapper';
@@ -210,77 +211,91 @@ class Task extends Component {
 
               <div className="pt-3 pt-lg-3 pb-5">
                 {userTask.status && (
-                  <CardWrapper className="p-3 mt-3">
-                    {userTask.status === IN_WORK_STATUS_ID && (
-                      <ReportFormRedux
-                        onSubmit={this.handleClickSendReport}
-                        initialValues={{
-                          report: userTask.report,
-                          screenshots,
-                        }}
-                        reply={userTask.reply}
-                      />
-                    )}
+                  <>
+                    <CardWrapper className="p-3 mt-3">
+                      {userTask.status === IN_WORK_STATUS_ID && (
+                        <ReportFormRedux
+                          onSubmit={this.handleClickSendReport}
+                          initialValues={{
+                            report: userTask.report,
+                            screenshots,
+                          }}
+                          reply={userTask.reply}
+                        />
+                      )}
 
-                    {userTask.status === REJECTED_STATUS_ID && (
-                      <div className="alert alert-danger" role="alert">
-                        Выполнение задания отклонено, причина:
-                        {' '}
-                        {userTask.reply}
-                      </div>
-                    )}
+                      {userTask.status === REJECTED_STATUS_ID && (
+                        <div className="alert alert-danger" role="alert">
+                          Выполнение задания отклонено, причина:
+                          {' '}
+                          {userTask.reply}
+                        </div>
+                      )}
 
-                    {userTask.status === PENDING_STATUS_ID && (
-                      <div className="alert alert-info" role="alert">
-                        <h4 className="alert-heading">На проверке</h4>
-                        {/* eslint-disable-next-line max-len */}
-                        <p>Заказчик должен проверить и подтвердить ваш отчет, если этого не произойдет в течение 72 часов, задание будует считаться выполненным</p>
-                        <hr />
+                      {userTask.status === PENDING_STATUS_ID && (
+                        <div className="alert alert-info mb-0" role="alert">
+                          <h4 className="alert-heading">На проверке</h4>
+                          {/* eslint-disable-next-line max-len */}
+                          <p>Заказчик должен проверить и подтвердить ваш отчет, если этого не произойдет в течение 72 часов, задание будует считаться выполненным</p>
+                          <hr />
 
-                        {userTask.reply && (
-                          <>
+                          {userTask.reply && (
                             <>
-                              Комментарий заказчика:
-                              {' '}
-                              {userTask.reply}
+                              <>
+                                Комментарий заказчика:
+                                {' '}
+                                {userTask.reply}
+                              </>
+                              <hr />
                             </>
-                            <hr />
-                          </>
-                        )}
+                          )}
 
-                        {userTask.report && (
-                          <>
-                            {`Отчет: ${userTask.report}`}
-                            <hr />
-                          </>
-                        )}
-                        <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
-                      </div>
-                    )}
+                          {userTask.report && (
+                            <>
+                              {`Отчет: ${userTask.report}`}
+                              <hr />
+                            </>
+                          )}
+                          <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
+                        </div>
+                      )}
 
-                    {userTask.status === SUCCESS_STATUS_ID && (
-                      <div className="alert alert-success" role="alert">
-                        <h4 className="alert-heading">Задание принято</h4>
-                      </div>
-                    )}
+                      {userTask.status === SUCCESS_STATUS_ID && (
+                        <div className="alert alert-success" role="alert">
+                          <h4 className="alert-heading">Задание принято</h4>
+                        </div>
+                      )}
 
-                    {userTask.status === REWORK_STATUS_ID && (
-                      <div className="alert alert-warning" role="alert">
-                        <h4 className="alert-heading">Требует доработки</h4>
-                        <p>{`Комментарий заказчика: ${userTask.reply}`}</p>
-                        <hr />
-                        <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
-                      </div>
-                    )}
+                      {userTask.status === REWORK_STATUS_ID && (
+                        <div className="alert alert-warning" role="alert">
+                          <h4 className="alert-heading">Требует доработки</h4>
+                          <p>{`Комментарий заказчика: ${userTask.reply}`}</p>
+                          <hr />
+                          <Button onClick={this.handleClickEditReport} variant="outline-success" className="mt-1">Редактировать</Button>
+                        </div>
+                      )}
 
-                    {userTask.status === OVERDUE_STATUS_ID && (
-                      <div className="alert alert-secondary" role="alert">
-                        <h4 className="alert-heading">Не выполнено</h4>
-                        <p>Вы не исполнили задачу в отведенное время</p>
-                      </div>
-                    )}
+                      {userTask.status === OVERDUE_STATUS_ID && (
+                        <div className="alert alert-secondary" role="alert">
+                          <h4 className="alert-heading">Не выполнено</h4>
+                          <p>Вы не исполнили задачу в отведенное время</p>
+                        </div>
+                      )}
 
-                  </CardWrapper>
+                    </CardWrapper>
+                    {
+                      (userTask.status === PENDING_STATUS_ID
+                      || userTask.status === SUCCESS_STATUS_ID)
+                      && userTask.nextTaskId
+                      && (
+                        <Link to={`/task/${userTask.nextTaskId}`}>
+                          <Button variant="success" className="mt-4">
+                            Приступить к следующему
+                          </Button>
+                        </Link>
+                      )
+                    }
+                  </>
                 )}
               </div>
             </>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Preloader from '../generic/Preloader';
 import TaskDetails from './TaskDetails';
@@ -108,6 +109,14 @@ class Task extends Component {
                 <Button onClick={this.handleClickMakeTask} variant="primary" className="mt-4">Выполнить задание</Button>
               )}
 
+              {userTasksAvailability.taskExecution && (
+                <Link to={`/task-execution/${userTasksAvailability.taskExecution}`}>
+                  <Button variant="outline-success" className="mt-4">
+                    На страницу отчета
+                  </Button>
+                </Link>
+              )}
+
               <div className="pt-3">
                 {userTasksAvailability.reason && (() => {
                   let reason = '';
@@ -125,6 +134,12 @@ class Task extends Component {
                   }
                   if (userTasksAvailability.reason === 'default') {
                     reason = 'Задача станет доступной для выполнения после отправки отчета и по прошествию интервала времени';
+                  }
+                  if (userTasksAvailability.reason === 'in_work') {
+                    reason = 'Не отправлен предыдущий отчет';
+                  }
+                  if (userTasksAvailability.reason === 'pending') {
+                    reason = 'Задача еще на проверке';
                   }
                   return (<>{reason}</>);
                 })()}

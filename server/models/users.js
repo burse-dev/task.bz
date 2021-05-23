@@ -37,7 +37,7 @@ Users.prototype.recalculatePayments = async function () {
   );
 
   return this.update({
-    balance,
+    balance: balance.toFixed(2),
   });
 };
 
