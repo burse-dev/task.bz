@@ -52,7 +52,7 @@ export const getOwnData = async (req, res) => {
   });
 
   await Users.update({
-    lastIp: req.connection.remoteAddress,
+    lastIp: req.headers['x-real-ip'],
   }, {
     where: {
       id: req.user.id,
