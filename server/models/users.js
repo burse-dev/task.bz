@@ -18,6 +18,7 @@ const Users = db.define('users', {
   city: Sequelize.TEXT,
   password: Sequelize.TEXT,
   lastActivity: Sequelize.DATE,
+  lastIp: Sequelize.TEXT,
   status: {
     type: Sequelize.INTEGER,
     allowNull: false,

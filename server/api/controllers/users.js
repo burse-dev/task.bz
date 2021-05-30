@@ -37,7 +37,7 @@ export const signIn = async (req, res) => {
 };
 
 export const getOwnData = async (req, res) => {
-  const data = await Users.findOne({
+  const User = await Users.findOne({
     include: [
       {
         model: Requisites,
@@ -51,7 +51,15 @@ export const getOwnData = async (req, res) => {
     ],
   });
 
-  res.json(data);
+  await Users.update({
+    lastIp: req.connection.remoteAddress,
+  }, {
+    where: {
+      id: req.user.id,
+    },
+  });
+
+  res.json(User);
 };
 
 export const addRequisites = async (req, res) => {

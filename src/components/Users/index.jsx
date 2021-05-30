@@ -112,6 +112,7 @@ class Users extends Component {
                       {/* <th>Дата рождения</th> */}
                       <th>Дата регистрации</th>
                       <th>Посл. активность</th>
+                      <th>Посл. ip</th>
                       <th>Бан</th>
                     </tr>
                   </thead>
@@ -127,6 +128,7 @@ class Users extends Component {
                         {/* <td>{user.dob && moment(user.dob).format('DD.MM.YY')}</td> */}
                         <td>{moment(user.createdAt).format('DD.MM.YY HH:mm')}</td>
                         <td>{user.lastActivity && moment(user.lastActivity).format('DD.MM.YY HH:mm')}</td>
+                        <td>{user.lastIp}</td>
                         <td>
                           <SmallButton
                             icon={user.status === BANNED_USER_STATUS_ID
