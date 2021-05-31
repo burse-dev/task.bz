@@ -30,7 +30,7 @@ router.param('id', (req, res, next, id) => {
 
 router.get('/feedTasks', async (req, res, next) => {
   try {
-    const { filter } = req.query;
+    const { filter, categoryFilter } = req.query;
 
     let executionTypeFilter = '';
     if (filter === 'one-time') {
@@ -38,6 +38,11 @@ router.get('/feedTasks', async (req, res, next) => {
     }
     if (filter === 'repeated') {
       executionTypeFilter = `AND "tasks"."executionType" = ${REPEATED_TYPE_ID}`;
+    }
+
+    let categoryFilterQuery = '';
+    if (categoryFilter) {
+      categoryFilterQuery = `AND "tasks"."category" = ${categoryFilter}`;
     }
 
     let order = '"tasks"."createdAt" DESC';
@@ -54,7 +59,7 @@ router.get('/feedTasks', async (req, res, next) => {
       "tasks"."doneCount", "tasks"."rejectedCount"
       FROM "tasks"
       WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) AND "tasks"."taskPackId" is NULL ${executionTypeFilter} 
-      AND "tasks"."status" = ${IN_WORK_TASK_STATUS_ID}        
+      AND "tasks"."status" = ${IN_WORK_TASK_STATUS_ID} ${categoryFilterQuery}    
       ORDER BY "tasks"."inPriority" DESC, ${order}
     `;
 

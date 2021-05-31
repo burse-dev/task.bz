@@ -11,9 +11,15 @@ import Preloader from '../generic/Preloader';
 import crownIcon from '../img/crownIcon-active.svg';
 import stackIcon from '../img/stackIcon.svg';
 import singleTaskIcon from '../img/singleTaskIcon.svg';
+import {
+  CLICK_CATEGORY_ID, CLICKS_CATEGORY_ID,
+  COMMENTS_CATEGORY_ID, LIKE_CATEGORY_ID,
+  REPOST_CATEGORY_ID,
+} from '../../constant/category';
 
 const Filter = styled.div`
   width: 200px;
+  margin-right: 10px;
 `;
 
 const FeedDescription = styled.p`
@@ -42,6 +48,7 @@ class Feed extends Component {
       },
       taskPackages: [],
       filter: null,
+      categoryFilter: null,
     };
   }
 
@@ -72,10 +79,26 @@ class Feed extends Component {
     });
   };
 
+  setCategoryFilter = async (e) => {
+    const categoryFilter = e.target.value;
+
+    await this.setState({
+      loading: true,
+      categoryFilter: categoryFilter || null,
+    });
+
+    await this.load();
+
+    this.setState({
+      loading: false,
+    });
+  };
+
   load = async () => {
-    const { filter } = this.state;
+    const { filter, categoryFilter } = this.state;
     const query = new URLSearchParams({
       ...(filter && { filter }),
+      ...(categoryFilter && { categoryFilter }),
     });
 
     const feedTasks = await fetch(`/api/feedTasks?${query}`, {
@@ -112,7 +135,7 @@ class Feed extends Component {
   });
 
   render() {
-    const { loading, sortedTasks, filter, taskPackages } = this.state;
+    const { loading, sortedTasks, filter, categoryFilter, taskPackages } = this.state;
 
     return (
       <>
@@ -125,15 +148,43 @@ class Feed extends Component {
             </FeedDescription>
           </div>
 
-          <Filter>
-            <Form.Control onChange={this.setFilter} as="select" custom>
-              <option selected={filter === null}>По дате</option>
-              <option selected={filter === 'one-time'} value="one-time">Одноразовые</option>
-              <option selected={filter === 'repeated'} value="repeated">Многоразовые</option>
-              <option selected={filter === 'increase'} value="increase">По возрастанию цены</option>
-              <option selected={filter === 'decrease'} value="decrease">По убыванию цены</option>
-            </Form.Control>
-          </Filter>
+          <div className="d-flex">
+            <Filter>
+              <Form.Control onChange={this.setFilter} as="select" custom>
+                <option selected={filter === null}>По дате</option>
+                <option selected={filter === 'one-time'} value="one-time">Одноразовые</option>
+                <option selected={filter === 'repeated'} value="repeated">Многоразовые</option>
+                <option selected={filter === 'increase'} value="increase">По возрастанию цены</option>
+                <option selected={filter === 'decrease'} value="decrease">По убыванию цены</option>
+              </Form.Control>
+            </Filter>
+
+            <Filter>
+              <Form.Control onChange={this.setCategoryFilter} as="select" custom>
+                <option selected={categoryFilter === null}>
+                  Все категории
+                </option>
+                <option selected={categoryFilter === CLICK_CATEGORY_ID} value={CLICK_CATEGORY_ID}>
+                  Переход на сайт
+                </option>
+                <option
+                  selected={categoryFilter === COMMENTS_CATEGORY_ID}
+                  value={COMMENTS_CATEGORY_ID}
+                >
+                  Комментарии/Отзывы
+                </option>
+                <option selected={categoryFilter === REPOST_CATEGORY_ID} value={REPOST_CATEGORY_ID}>
+                  Репост записей
+                </option>
+                <option selected={categoryFilter === LIKE_CATEGORY_ID} value={LIKE_CATEGORY_ID}>
+                  Лайк
+                </option>
+                <option selected={categoryFilter === CLICKS_CATEGORY_ID} value={CLICKS_CATEGORY_ID}>
+                  Только клики
+                </option>
+              </Form.Control>
+            </Filter>
+          </div>
 
         </Container>
         <Container className="vh-80 pt-3">
