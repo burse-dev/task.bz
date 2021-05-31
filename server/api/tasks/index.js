@@ -48,20 +48,15 @@ router.get('/feedTasks', async (req, res, next) => {
       order = '"tasks"."price" DESC';
     }
 
-    const sqlQuery = `SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price", "tasks"."description", "tasks"."executionType", "tasks"."inPriority", "tasks"."taskPackId",
-                COUNT(DISTINCT "userTasks"."id"),
-                COUNT(DISTINCT  "userTasksDone"."id") as "doneCount",
-                COUNT(DISTINCT "userTasksRejected"."id") as "rejectedCount"
-                FROM "tasks"
-                LEFT OUTER JOIN "userTasks" ON "tasks"."id" = "userTasks"."taskId" 
-                    AND "userTasks"."status" IN (${IN_WORK_STATUS_ID}, ${PENDING_STATUS_ID}, ${REWORK_STATUS_ID}, ${REJECTED_STATUS_ID}, ${SUCCESS_STATUS_ID})
-                LEFT JOIN "userTasks" as "userTasksDone" ON "tasks"."id" = "userTasksDone"."taskId" AND "userTasksDone"."status" = ${SUCCESS_STATUS_ID}
-                LEFT JOIN "userTasks" as "userTasksRejected" ON "tasks"."id" = "userTasksRejected"."taskId" AND "userTasksRejected"."status" = ${REJECTED_STATUS_ID}
-                WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) AND "tasks"."taskPackId" is NULL ${executionTypeFilter} 
-                AND "tasks"."status" = 1
-                GROUP BY "tasks"."id"
-                HAVING (COUNT("userTasks"."taskId") < "tasks"."limitTotal" OR "tasks"."limitTotal" IS NULL)
-                ORDER BY "tasks"."inPriority" DESC, ${order}`;
+    const sqlQuery = `
+      SELECT "tasks"."id", "tasks"."title", "tasks"."category", "tasks"."status", "tasks"."price",
+      "tasks"."description", "tasks"."executionType", "tasks"."inPriority", "tasks"."taskPackId",
+      "tasks"."doneCount", "tasks"."rejectedCount"
+      FROM "tasks"
+      WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) AND "tasks"."taskPackId" is NULL ${executionTypeFilter} 
+      AND "tasks"."status" = ${IN_WORK_TASK_STATUS_ID}        
+      ORDER BY "tasks"."inPriority" DESC, ${order}
+    `;
 
     const tasks = await Tasks.sequelize.query(sqlQuery, {
       model: Tasks,
@@ -278,6 +273,45 @@ router.get('/task/updateStatus', async (req, res, next) => {
         });
       }
     });
+
+    res.json(true);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get('/task/updateCounters', async (req, res, next) => {
+  try {
+    const sqlQuery = `SELECT "tasks"."id",
+                COUNT(DISTINCT "userTasks"."id"),
+                COUNT(DISTINCT  "userTasksDone"."id") as "doneCount",
+                COUNT(DISTINCT "userTasksRejected"."id") as "rejectedCount"
+                FROM "tasks"
+                LEFT OUTER JOIN "userTasks" ON "tasks"."id" = "userTasks"."taskId" 
+                    AND "userTasks"."status" IN (${IN_WORK_STATUS_ID}, ${PENDING_STATUS_ID}, ${REWORK_STATUS_ID}, ${REJECTED_STATUS_ID}, ${SUCCESS_STATUS_ID})
+                LEFT JOIN "userTasks" as "userTasksDone" ON "tasks"."id" = "userTasksDone"."taskId" AND "userTasksDone"."status" = ${SUCCESS_STATUS_ID}
+                LEFT JOIN "userTasks" as "userTasksRejected" ON "tasks"."id" = "userTasksRejected"."taskId" AND "userTasksRejected"."status" = ${REJECTED_STATUS_ID}
+                WHERE (("tasks"."startTime" <= NOW() AND "tasks"."endTime" >= NOW()) OR "tasks"."endTime" IS NULL) AND "tasks"."taskPackId" is NULL 
+                AND "tasks"."status" = 1
+                GROUP BY "tasks"."id"
+                HAVING (COUNT("userTasks"."taskId") < "tasks"."limitTotal" OR "tasks"."limitTotal" IS NULL)`;
+
+    const tasks = await Tasks.sequelize.query(sqlQuery, {
+      model: Tasks,
+      mapToModel: true,
+    });
+
+    if (tasks.length) {
+      tasks.map(({ doneCount, rejectedCount, id }) => Tasks.update({
+        doneCount,
+        rejectedCount,
+      },
+      {
+        where: {
+          id,
+        },
+      }));
+    }
 
     res.json(true);
   } catch (e) {

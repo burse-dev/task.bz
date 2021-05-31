@@ -18,7 +18,8 @@ const Tasks = db.define('task', {
   status: Sequelize.INTEGER,
   startTime: Sequelize.DATE,
   endTime: Sequelize.DATE,
-  owner: Sequelize.INTEGER,
+  doneCount: Sequelize.INTEGER,
+  rejectedCount: Sequelize.INTEGER,
   inPriority: {
     type: Sequelize.BOOLEAN,
     allowNull: false,

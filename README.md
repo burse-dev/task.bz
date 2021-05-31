@@ -1,6 +1,8 @@
 # task.bz
 
-
+Задачи в кроне:
+* * * * * wget -qO- https://task.bz/api/task/updateStatus &> /dev/null - обновить статусы задач
+* * * * * wget -qO- https://task.bz/api/task/updateCounters &> /dev/null - обновить колчиество завершенных заадач
 
 ##pm2 start
 ```
