@@ -98,6 +98,19 @@ class Header extends Component {
                       </LinkContainer>
                     </>
                   )}
+
+                  <LinkContainer to="/messages">
+                    <Nav.Link href="/messages">
+                      <div className="d-flex align-items-center">
+                        <span className="pr-1">Сообщения</span>
+                        {!!user.unreadMessagesCount && (
+                          <span className="badge badge-pill badge-danger">
+                            {user.unreadMessagesCount}
+                          </span>
+                        )}
+                      </div>
+                    </Nav.Link>
+                  </LinkContainer>
                 </>
               )}
             </Nav>

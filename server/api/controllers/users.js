@@ -7,9 +7,13 @@ import Tasks from '../../models/tasks';
 import Files from '../../models/files';
 import Requisites from '../../models/requisites';
 import UserTasks from '../../models/userTasks';
+import Messages from '../../models/messages';
 import UserAchievements from '../../models/userAchievements';
 import generateHash from '../../functions/generateHash';
-import { IN_WORK_STATUS_ID, PENDING_STATUS_ID } from '../../../src/constant/taskExecutionStatus';
+import {
+  IN_WORK_STATUS_ID,
+  PENDING_STATUS_ID,
+} from '../../../src/constant/taskExecutionStatus';
 import Tickets from '../../models/tickets';
 import { PENDING_TICKET_STATUS_ID } from '../../../src/constant/ticketStatus';
 import Transactions from '../../models/transactions';
@@ -51,6 +55,13 @@ export const getOwnData = async (req, res) => {
     ],
   });
 
+  const unreadMessagesCount = await Messages.count({
+    where: {
+      recipientId: req.user.id,
+      wasRead: false,
+    },
+  });
+
   await Users.update({
     lastIp: req.headers['x-real-ip'],
   }, {
@@ -59,7 +70,10 @@ export const getOwnData = async (req, res) => {
     },
   });
 
-  res.json(User);
+  res.json({
+    unreadMessagesCount,
+    ...User.dataValues,
+  });
 };
 
 export const addRequisites = async (req, res) => {

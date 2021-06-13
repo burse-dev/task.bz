@@ -21,6 +21,9 @@ import Footer from './Footer';
 import Users from './Users';
 import Mailing from './Mailing';
 import Header from './Header';
+import Messages from './Messages';
+import NewMessage from './Messages/NewMessage';
+import Dialog from './Messages/Dialog';
 
 export default () => (
   <>
@@ -60,6 +63,10 @@ export default () => (
       <PrivateRoute exact path="/users" component={Users} />
 
       <PrivateRoute exact path="/mailing" component={Mailing} />
+
+      <PrivateRoute exact path="/messages" component={Messages} />
+      <PrivateRoute exact path="/messages/dialog/:id" component={Dialog} />
+      <PrivateRoute exact path="/messages/new" component={NewMessage} />
 
       {/* <Route exact path="/admin/tasks/:id" component={CreateTask} /> */}
 

@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import Requisites from './requisites';
 import UserTasks from './userTasks';
 import Transactions from './transactions';
-import UserAchievement from './userAchievements';
+import Dialogs from './dialogs';
 
 const db = require('../config/database');
 
@@ -47,7 +47,13 @@ UserTasks.belongsTo(Users);
 
 Users.hasMany(Requisites);
 
-Users.hasMany(UserAchievement);
+Users.hasMany(Dialogs, {
+  foreignKey: 'adminId',
+});
+
+Users.hasMany(Dialogs, {
+  foreignKey: 'userId',
+});
 
 Users.hasMany(Transactions);
 Transactions.belongsTo(Users);

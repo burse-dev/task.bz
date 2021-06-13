@@ -12,7 +12,7 @@ export default ({
     error={touched && error}
     placeholderText={placeholder || ''}
     selected={value ? new Date(value) : null}
-    dateFormat="dd.MM.yyyy H:m"
+    dateFormat="dd.MM.yyyy H:mm"
     onChange={onChange}
     {...rest}
     timeIntervals={15}

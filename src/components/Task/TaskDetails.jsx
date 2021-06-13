@@ -79,7 +79,7 @@ export default ({
       {endTime && (
         <section className="pt-2">
           <b>Задание доступно до: </b>
-          {moment(endTime).format('DD.MM.YYYY H:m')}
+          {moment(endTime).format('DD.MM.YYYY H:mm')}
         </section>
       )}
 
