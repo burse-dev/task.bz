@@ -10,7 +10,6 @@ import App from './components/App';
 import reducers from './reducers';
 
 const jwtToken = localStorage.getItem('JWT_TOKEN');
-// const locationRegion = localStorage.getItem('LOCATION_REGION');
 
 const ScrollToTop = () => {
   window.scrollTo(0, 0);
